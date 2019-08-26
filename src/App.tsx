@@ -1,26 +1,64 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import { Button, Pane } from 'evergreen-ui'
+import { Link, BrowserRouter, Switch, Route } from 'react-router-dom'
+import { Navbar } from './Navbar'
 
 const App: React.FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <Pane height="calc(100vh - 8px)" margin={-8} fontFamily="arial">
+      <BrowserRouter>
+        <Pane
+          display="flex"
+          flexDirection="column"
+          justifyContent="space-around"
+          height="100%"
         >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+          <Navbar>
+            <Button is={Link} to="/recipes" marginRight={16}>
+              Recipes
+            </Button>
+            <Button is={Link} to="/schedule" marginRight={16}>
+              Schedule
+            </Button>
+            <Button is={Link} to="/people" marginRight={16}>
+              People
+            </Button>
+            <Button is={Link} to="/admin">
+              Admin
+            </Button>
+          </Navbar>
+          <Pane flex={1} padding={16} height="100%">
+            <Switch>
+              <Route
+                path="/recipes"
+                render={props => {
+                  return <div>Recipes</div>
+                }}
+              />
+              <Route
+                path="/schedule"
+                render={props => {
+                  return <div>Schedule</div>
+                }}
+              />
+              <Route
+                path="/people"
+                render={props => {
+                  return <div>People</div>
+                }}
+              />
+              <Route
+                path="/admin"
+                render={props => {
+                  return <div>Admin</div>
+                }}
+              />
+            </Switch>
+          </Pane>
+        </Pane>
+      </BrowserRouter>
+    </Pane>
+  )
 }
 
-export default App;
+export default App
