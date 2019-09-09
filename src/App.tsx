@@ -1,7 +1,8 @@
 import React from 'react'
 import { Button, Pane } from 'evergreen-ui'
-import { Link, BrowserRouter, Switch, Route } from 'react-router-dom'
+import { BrowserRouter, Link, Route, Switch } from 'react-router-dom'
 import { Navbar } from './Navbar'
+import { RecipesPage } from './recipes/RecipesPage'
 
 const App: React.FC = () => {
   return (
@@ -29,12 +30,7 @@ const App: React.FC = () => {
           </Navbar>
           <Pane flex={1} padding={16} height="100%">
             <Switch>
-              <Route
-                path="/recipes"
-                render={props => {
-                  return <div>Recipes</div>
-                }}
-              />
+              <Route path="/recipes" render={() => <RecipesPage />} />
               <Route
                 path="/schedule"
                 render={props => {
