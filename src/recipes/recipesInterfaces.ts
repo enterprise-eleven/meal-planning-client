@@ -4,18 +4,14 @@ export interface RecipeProps {
   prepTime?: string
   cookTime?: string
   ingredients: Ingredient[]
-  preparation?: string[]
-  directions?: string[]
+  preparation?: string
+  directions?: string
 }
 
 export interface RecipesListProps {
   recipes: RecipeProps[]
-  selectedRecipe: RecipeProps
+  selectedRecipe: RecipeProps | null
   setSelectedRecipe(recipe: RecipeProps): void
-}
-
-export interface RecipeInformationProps {
-  recipe: RecipeProps
 }
 
 export interface Ingredient {

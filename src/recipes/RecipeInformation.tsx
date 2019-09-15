@@ -7,12 +7,22 @@ import {
   ListItem,
   Paragraph,
 } from 'evergreen-ui'
-import { RecipeInformationProps } from './recipesInterfaces'
 import { ShowIfArrayHasData, ShowIfStringHasData } from '../common/components'
+import { RecipeProps } from './recipesInterfaces'
 
-export const RecipeInformation: React.FC<RecipeInformationProps> = ({
+export const RecipeInformation: React.FC<{ recipe: RecipeProps | null }> = ({
   recipe,
 }) => {
+  if (recipe === null) {
+    return (
+      <Pane>
+        <Heading size={700} paddingBottom={16}>
+          Please select a recipe.
+        </Heading>
+      </Pane>
+    )
+  }
+
   return (
     <Pane>
       <ShowIfStringHasData string={recipe.id}>
@@ -42,21 +52,15 @@ export const RecipeInformation: React.FC<RecipeInformationProps> = ({
         <Heading size={600} paddingTop={16} paddingBottom={16}>
           Preparation
         </Heading>
-        <ShowIfArrayHasData array={recipe.preparation}>
-          {recipe.preparation &&
-            recipe.preparation.map(prep => (
-              <Paragraph paddingBottom={8}>{prep}</Paragraph>
-            ))}
-        </ShowIfArrayHasData>
+        <ShowIfStringHasData string={recipe.preparation}>
+          <Paragraph paddingBottom={8}>{recipe.preparation}</Paragraph>
+        </ShowIfStringHasData>
         <Heading size={600} paddingTop={16} paddingBottom={16}>
           Cooking Directions
         </Heading>
-        <ShowIfArrayHasData array={recipe.directions}>
-          {recipe.directions &&
-            recipe.directions.map(direction => (
-              <Paragraph paddingBottom={8}>{direction}</Paragraph>
-            ))}
-        </ShowIfArrayHasData>
+        <ShowIfStringHasData string={recipe.directions}>
+          <Paragraph paddingBottom={8}>{recipe.directions}</Paragraph>
+        </ShowIfStringHasData>
       </ShowIfStringHasData>
     </Pane>
   )

@@ -1,70 +1,46 @@
 import React from 'react'
 import { Pane } from 'evergreen-ui'
+import { useQuery } from '@apollo/react-hooks'
+import { gql } from 'apollo-boost'
 import { RecipesList } from './RecipesList'
 import { RecipeInformation } from './RecipeInformation'
 import { RecipeProps } from './recipesInterfaces'
 
-const fakeData = [
+const RECIPES = gql`
   {
-    id: '123',
-    name: 'Yummy Chicken',
-    prepTime: '15',
-    cookTime: '30',
-    ingredients: [
-      { quantity: 1, measurement: 'lb', item: 'chicken breasts' },
-      { quantity: 1, item: 'Other yummy stuff' },
-      { quantity: 1, item: 'More yummy stuff?' },
-    ],
-    preparation: [
-      'Put the yummy stuff together in a bowl',
-      'Put the chicken in the bowl',
-      'Put in fridge for 15 minutes for some reason',
-    ],
-    directions: [
-      'Preheat over to 375 degrees',
-      'Cook the chicken and stuff for 30 minutes',
-      'Eat it',
-    ],
-  },
-  {
-    id: '456',
-    name: 'Delicious Pork',
-    prepTime: '45',
-    cookTime: '300',
-    ingredients: [
-      { quantity: 1, measurement: 'lb', item: 'pork' },
-      { quantity: 1, item: 'spices' },
-    ],
-    preparation: ['Rub pork with spices for way too long'],
-    directions: [
-      'Preheat grill to 225 degrees',
-      'Cook pork for 5 hours',
-      'This is really long text just to see how bad it might look on the screen. This is really long text just to see how bad it might look on the screen. This is really long text just to see how bad it might look on the screen. This is really long text just to see how bad it might look on the screen. This is really long text just to see how bad it might look on the screen.',
-      'Eat',
-    ],
-  },
-  {
-    id: '789',
-    name: 'Must Have Meatloaf',
-    prepTime: '1 day',
-    cookTime: '1 hour',
-    ingredients: [{ quantity: 1, item: 'Meatloaf?' }],
-    preparation: ['Do nothing'],
-    directions: ["Don't eat it, meatloaf is gross"],
-  },
-]
+    recipes {
+      cookTime
+      directions
+      id
+      ingredients {
+        item
+        measurement
+        quantity
+        id
+      }
+      name
+      prepTime
+      preparation
+    }
+  }
+`
 
 export const RecipesPage = () => {
-  const [selectedRecipe, setSelectedRecipe] = React.useState<RecipeProps>({
-    id: '',
-    name: '',
-    ingredients: [],
-  })
+  const [
+    selectedRecipe,
+    setSelectedRecipe,
+  ] = React.useState<RecipeProps | null>(null)
+  const { loading, error, data } = useQuery(RECIPES)
+  console.log(data)
+  if (loading || error) {
+    // TODO Handle loading / error cases
+    return <Pane />
+  }
   return (
-    <Pane clearfix padding={24} display="flex" flexDirectiion="row">
+    <Pane clearfix padding={24} display="flex" flexDirection="row">
       <Pane flex={1}>
         <RecipesList
-          recipes={fakeData}
+          recipes={data.recipes}
           selectedRecipe={selectedRecipe}
           setSelectedRecipe={setSelectedRecipe}
         />

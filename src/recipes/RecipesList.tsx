@@ -10,7 +10,8 @@ export const RecipesList: React.FC<RecipesListProps> = ({
   return (
     <>
       {recipes.map((recipe, index) => {
-        const isSelected = selectedRecipe.id === recipe.id
+        const isSelected =
+          selectedRecipe !== null && selectedRecipe.id === recipe.id
         return (
           <Pane
             key={recipe.id}
