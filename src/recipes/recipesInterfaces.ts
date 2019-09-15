@@ -1,21 +1,17 @@
 export interface RecipeProps {
-  id: string
+  id?: string
   name: string
   prepTime?: string
   cookTime?: string
-  ingredients: Ingredient[]
+  ingredients?: Ingredient[]
   preparation?: string[]
   directions?: string[]
 }
 
 export interface RecipesListProps {
   recipes: RecipeProps[]
-  selectedRecipe: RecipeProps
-  setSelectedRecipe(recipe: RecipeProps): void
-}
-
-export interface RecipeInformationProps {
-  recipe: RecipeProps
+  selectedRecipe: RecipeProps | null
+  selectRecipe(recipe: RecipeProps): void
 }
 
 export interface Ingredient {

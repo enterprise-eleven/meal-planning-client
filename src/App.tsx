@@ -4,6 +4,14 @@ import { BrowserRouter, Link, Route, Switch } from 'react-router-dom'
 import { Navbar } from './Navbar'
 import { RecipesPage } from './recipes/RecipesPage'
 
+import API from '@aws-amplify/api'
+import PubSub from '@aws-amplify/pubsub'
+
+import config from './aws-exports'
+
+API.configure(config)
+PubSub.configure(config)
+
 const App: React.FC = () => {
   return (
     <Pane height="calc(100vh - 8px)" margin={-8} fontFamily="arial">

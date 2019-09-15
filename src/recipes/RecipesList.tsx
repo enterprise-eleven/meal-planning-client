@@ -5,12 +5,13 @@ import { RecipesListProps } from './recipesInterfaces'
 export const RecipesList: React.FC<RecipesListProps> = ({
   recipes,
   selectedRecipe,
-  setSelectedRecipe,
+  selectRecipe,
 }) => {
   return (
-    <>
+    <Pane paddingTop={16}>
       {recipes.map((recipe, index) => {
-        const isSelected = selectedRecipe.id === recipe.id
+        const isSelected =
+          selectedRecipe !== null && selectedRecipe.id === recipe.id
         return (
           <Pane
             key={recipe.id}
@@ -26,13 +27,13 @@ export const RecipesList: React.FC<RecipesListProps> = ({
             justifyContent="left"
             alignItems="center"
             onClick={() => {
-              setSelectedRecipe(recipe)
+              selectRecipe(recipe)
             }}
           >
             <Text>{recipe.name}</Text>
           </Pane>
         )
       })}
-    </>
+    </Pane>
   )
 }

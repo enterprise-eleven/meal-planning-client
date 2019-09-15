@@ -1,8 +1,12 @@
 import React from 'react'
-import { Pane } from 'evergreen-ui'
+import { Pane, Button } from 'evergreen-ui'
+import API, { graphqlOperation } from '@aws-amplify/api'
 import { RecipesList } from './RecipesList'
 import { RecipeInformation } from './RecipeInformation'
 import { RecipeProps } from './recipesInterfaces'
+import { emptyRecipe } from './emptyRecipe'
+import { RecipeForm } from './RecipeForm'
+import { listRecipes } from '../graphql/queries'
 
 const fakeData = [
   {
@@ -55,22 +59,54 @@ const fakeData = [
 ]
 
 export const RecipesPage = () => {
-  const [selectedRecipe, setSelectedRecipe] = React.useState<RecipeProps>({
-    id: '',
-    name: '',
-    ingredients: [],
-  })
+  const [
+    selectedRecipe,
+    setSelectedRecipe,
+  ] = React.useState<RecipeProps | null>(null)
+  const [addRecipe, setAddRecipe] = React.useState<Boolean>(false)
+  const recipeData = React.useRef<RecipeProps[]>()
+  React.useEffect(() => {
+    async function getData() {
+      const {
+        data: {
+          listRecipes: { items },
+        },
+      } = await API.graphql(graphqlOperation(listRecipes))
+      if (items !== undefined) {
+        recipeData.current = items
+      }
+    }
+
+    getData()
+  }, [])
+
+  const selectRecipe = (recipe: RecipeProps) => {
+    setSelectedRecipe(recipe)
+    setAddRecipe(false)
+  }
   return (
-    <Pane clearfix padding={24} display="flex" flexDirectiion="row">
-      <Pane flex={1}>
+    <Pane clearfix padding={24} display="flex" flexDirection="row">
+      <Pane flex={1} display="flex" flexDirection="column">
+        <Button
+          onClick={() => {
+            setSelectedRecipe(emptyRecipe)
+            setAddRecipe(true)
+          }}
+        >
+          Add a Recipe!
+        </Button>
         <RecipesList
-          recipes={fakeData}
+          recipes={recipeData.current || [emptyRecipe]}
           selectedRecipe={selectedRecipe}
-          setSelectedRecipe={setSelectedRecipe}
+          selectRecipe={selectRecipe}
         />
       </Pane>
       <Pane flex={4} paddingLeft={32}>
-        <RecipeInformation recipe={selectedRecipe} />
+        {addRecipe ? (
+          <RecipeForm />
+        ) : (
+          <RecipeInformation recipe={selectedRecipe} />
+        )}
       </Pane>
     </Pane>
   )
