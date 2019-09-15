@@ -1,5 +1,5 @@
 export interface RecipeProps {
-  id: string
+  id?: string
   name: string
   prepTime?: string
   cookTime?: string
@@ -11,7 +11,7 @@ export interface RecipeProps {
 export interface RecipesListProps {
   recipes: RecipeProps[]
   selectedRecipe: RecipeProps | null
-  setSelectedRecipe(recipe: RecipeProps): void
+  selectRecipe(recipe: RecipeProps): void
 }
 
 export interface Ingredient {

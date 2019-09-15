@@ -5,7 +5,7 @@ import { RecipesListProps } from './recipesInterfaces'
 export const RecipesList: React.FC<RecipesListProps> = ({
   recipes,
   selectedRecipe,
-  setSelectedRecipe,
+  selectRecipe,
 }) => {
   return (
     <>
@@ -27,7 +27,7 @@ export const RecipesList: React.FC<RecipesListProps> = ({
             justifyContent="left"
             alignItems="center"
             onClick={() => {
-              setSelectedRecipe(recipe)
+              selectRecipe(recipe)
             }}
           >
             <Text>{recipe.name}</Text>
