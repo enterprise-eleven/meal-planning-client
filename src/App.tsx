@@ -1,59 +1,66 @@
 import React from 'react'
-import { Button, Pane } from 'evergreen-ui'
-import { BrowserRouter, Link, Route, Switch } from 'react-router-dom'
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
+import styled from 'styled-components'
+import { NavButton } from './common/components'
 import { Navbar } from './Navbar'
 import { RecipesPage } from './recipes/RecipesPage'
 
+const Main = styled.main`
+  height: calc(100vh - 8px);
+  font-family: arial;
+  margin: -8px;
+`
+
+const Page = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  height: 100%;
+`
+
+const Section = styled.section`
+  flex: 1;
+  padding: 16px;
+  height: 100%;
+`
+
 const App: React.FC = () => {
   return (
-    <Pane height="calc(100vh - 8px)" margin={-8} fontFamily="arial">
+    <Main>
       <BrowserRouter>
-        <Pane
-          display="flex"
-          flexDirection="column"
-          justifyContent="space-around"
-          height="100%"
-        >
+        <Page>
           <Navbar>
-            <Button is={Link} to="/recipes" marginRight={16}>
-              Recipes
-            </Button>
-            <Button is={Link} to="/schedule" marginRight={16}>
-              Schedule
-            </Button>
-            <Button is={Link} to="/people" marginRight={16}>
-              People
-            </Button>
-            <Button is={Link} to="/admin">
-              Admin
-            </Button>
+            <NavButton to="/recipes">Recipes</NavButton>
+            <NavButton to="/schedule">Schedule</NavButton>
+            <NavButton to="/people">People</NavButton>
+            <NavButton to="/admin">Admin</NavButton>
           </Navbar>
-          <Pane flex={1} padding={16} height="100%">
+          <Section>
             <Switch>
               <Route path="/recipes" render={() => <RecipesPage />} />
               <Route
                 path="/schedule"
-                render={props => {
+                render={(props) => {
                   return <div>Schedule</div>
                 }}
               />
               <Route
                 path="/people"
-                render={props => {
+                render={(props) => {
                   return <div>People</div>
                 }}
               />
               <Route
                 path="/admin"
-                render={props => {
+                render={(props) => {
                   return <div>Admin</div>
                 }}
               />
             </Switch>
-          </Pane>
-        </Pane>
+          </Section>
+        </Page>
       </BrowserRouter>
-    </Pane>
+    </Main>
   )
 }
 

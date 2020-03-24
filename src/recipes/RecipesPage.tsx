@@ -1,7 +1,7 @@
 import React from 'react'
-import { Pane, Button } from 'evergreen-ui'
 import { useQuery } from '@apollo/react-hooks'
 import { gql } from 'apollo-boost'
+import styled from 'styled-components'
 import { RecipesList } from './RecipesList'
 import { RecipeInformation } from './RecipeInformation'
 import { RecipeProps } from './recipesInterfaces'
@@ -26,6 +26,27 @@ const RECIPES = gql`
   }
 `
 
+const RecipesPageStyled = styled.div`
+  display: flex;
+  flex-direction: row;
+  padding: 24px;
+`
+
+const ListSectionStyled = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+`
+
+const AddButton = styled.button`
+  height: 32px;
+`
+
+const RecipeSection = styled.div`
+  flex: 4;
+  padding-left: 32px;
+`
+
 export const RecipesPage = () => {
   const [
     selectedRecipe,
@@ -41,33 +62,32 @@ export const RecipesPage = () => {
 
   if (loading || error) {
     // TODO Handle loading / error cases
-    return <Pane />
+    return <RecipesPageStyled />
   }
   return (
-    <Pane clearfix padding={24} display="flex" flexDirection="row">
-      <Pane flex={1} display="flex" flexDirection="column">
-        <Button
+    <RecipesPageStyled>
+      <ListSectionStyled>
+        <AddButton
           onClick={() => {
             setSelectedRecipe(null)
             setAddRecipe(true)
           }}
-          marginBottom={16}
         >
           Add a Recipe!
-        </Button>
+        </AddButton>
         <RecipesList
           recipes={data.recipes}
           selectedRecipe={selectedRecipe}
           selectRecipe={selectRecipe}
         />
-      </Pane>
-      <Pane flex={4} paddingLeft={32}>
+      </ListSectionStyled>
+      <RecipeSection>
         {addRecipe ? (
           <RecipeForm />
         ) : (
           <RecipeInformation recipe={selectedRecipe} />
         )}
-      </Pane>
-    </Pane>
+      </RecipeSection>
+    </RecipesPageStyled>
   )
 }

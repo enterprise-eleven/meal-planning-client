@@ -4,20 +4,23 @@
   "private": true,
   "dependencies": {
     "@apollo/react-hooks": "^3.1.0",
+    "@reach/menu-button": "^0.9.1",
     "@types/jest": "24.0.14",
     "@types/node": "12.0.8",
     "@types/react": "16.8.20",
     "@types/react-dom": "16.8.4",
     "@types/react-router": "^5.0.2",
     "@types/react-router-dom": "^4.3.4",
+    "@types/styled-components": "^5.0.1",
     "apollo-boost": "^0.4.4",
-    "evergreen-ui": "^4.17.0",
+    "formik": "^2.1.4",
     "graphql": "^14.5.6",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
     "react-router": "^5.0.1",
     "react-router-dom": "^5.0.1",
-    "react-scripts": "3.1.1",
+    "react-scripts": "3.4.1",
+    "styled-components": "^5.0.1",
     "typescript": "3.5.2"
   },
   "scripts": {
@@ -46,6 +49,6 @@
     "@typescript-eslint/parser": "^1.10.2",
     "eslint-config-prettier": "^5.0.0",
     "eslint-plugin-prettier": "^3.1.0",
-    "prettier": "^1.18.2"
+    "prettier": "2.0.1"
   }
 }

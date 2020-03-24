@@ -1,12 +1,4 @@
 import React from 'react'
-import {
-  Heading,
-  Pane,
-  Text,
-  UnorderedList,
-  ListItem,
-  Paragraph,
-} from 'evergreen-ui'
 import { ShowIfArrayHasData, ShowIfStringHasData } from '../common/components'
 import { RecipeProps } from './recipesInterfaces'
 
@@ -14,54 +6,36 @@ export const RecipeInformation: React.FC<{ recipe: RecipeProps | null }> = ({
   recipe,
 }) => {
   if (recipe === null) {
-    return (
-      <Pane>
-        <Heading size={700} paddingBottom={16}>
-          Please select a recipe.
-        </Heading>
-      </Pane>
-    )
+    return <h1>Please select a recipe.</h1>
   }
 
   return (
-    <Pane>
+    <>
       <ShowIfStringHasData string={recipe.id}>
-        <Heading size={700} paddingBottom={16}>
-          {recipe.name}
-        </Heading>
+        <h1>{recipe.name}</h1>
         <ShowIfStringHasData string={recipe.prepTime}>
-          <div>
-            <Text>{`Prep Time - ${recipe.prepTime}`}</Text>
-          </div>
+          <div>{`Prep Time - ${recipe.prepTime}`}</div>
         </ShowIfStringHasData>
         <ShowIfStringHasData string={recipe.cookTime}>
-          <div>
-            <Text>{`Cook Time - ${recipe.cookTime}`}</Text>
-          </div>
+          <div>{`Cook Time - ${recipe.cookTime}`}</div>
         </ShowIfStringHasData>
-        <Heading size={600} paddingTop={16} paddingBottom={16}>
-          Ingredients
-        </Heading>
+        <h2>Ingredients</h2>
         <ShowIfArrayHasData array={recipe.ingredients}>
-          <UnorderedList>
-            {recipe.ingredients.map(ingredient => (
-              <ListItem>{ingredient.item}</ListItem>
+          <ul>
+            {recipe.ingredients.map((ingredient) => (
+              <li>{ingredient.item}</li>
             ))}
-          </UnorderedList>
+          </ul>
         </ShowIfArrayHasData>
-        <Heading size={600} paddingTop={16} paddingBottom={16}>
-          Preparation
-        </Heading>
+        <h2>Preparation</h2>
         <ShowIfStringHasData string={recipe.preparation}>
-          <Paragraph paddingBottom={8}>{recipe.preparation}</Paragraph>
+          <p>{recipe.preparation}</p>
         </ShowIfStringHasData>
-        <Heading size={600} paddingTop={16} paddingBottom={16}>
-          Cooking Directions
-        </Heading>
+        <h2>Cooking Directions</h2>
         <ShowIfStringHasData string={recipe.directions}>
-          <Paragraph paddingBottom={8}>{recipe.directions}</Paragraph>
+          <p>{recipe.directions}</p>
         </ShowIfStringHasData>
       </ShowIfStringHasData>
-    </Pane>
+    </>
   )
 }

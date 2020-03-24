@@ -1,6 +1,29 @@
 import React from 'react'
-import { Pane, Text } from 'evergreen-ui'
+import styled, { css } from 'styled-components'
 import { RecipesListProps } from './recipesInterfaces'
+
+const List = styled.ul`
+  padding: 0;
+`
+
+interface SelectedProps {
+  isSelected: boolean
+}
+
+const ListItem = styled.li<SelectedProps>`
+  height: 32px;
+  padding-left: 16px;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  border: 1px solid black;
+
+  ${(props) =>
+    props.isSelected &&
+    css`
+      background: red;
+    `}
+`
 
 export const RecipesList: React.FC<RecipesListProps> = ({
   recipes,
@@ -8,32 +31,22 @@ export const RecipesList: React.FC<RecipesListProps> = ({
   selectRecipe,
 }) => {
   return (
-    <>
+    <List>
       {recipes.map((recipe, index) => {
         const isSelected =
           selectedRecipe !== null && selectedRecipe.id === recipe.id
         return (
-          <Pane
+          <ListItem
             key={recipe.id}
-            width="100%"
-            height={32}
-            paddingLeft={16}
-            borderLeft
-            borderRight
-            borderBottom
-            borderTop={index === 0}
-            background={`${isSelected ? 'red' : 'white'}`}
-            display="flex"
-            justifyContent="left"
-            alignItems="center"
             onClick={() => {
               selectRecipe(recipe)
             }}
+            isSelected={isSelected}
           >
-            <Text>{recipe.name}</Text>
-          </Pane>
+            {recipe.name}
+          </ListItem>
         )
       })}
-    </>
+    </List>
   )
 }
