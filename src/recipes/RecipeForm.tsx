@@ -47,10 +47,19 @@ const RightColumn = styled.div`
 `
 
 const IngredientColumn = styled.div`
-  flex: 1;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+`
+
+const FormButton = styled.button`
+  margin: 8px 0;
+  width: 100%;
+  height: 28px;
+  border-radius: 5px;
+  font-size: 16px;
+  font-family: arial;
+  border: 1px solid black;
 `
 
 export const RecipeForm: React.FC = () => {
@@ -142,7 +151,9 @@ export const RecipeForm: React.FC = () => {
               />
             </IngredientColumn>
           ))}
-        <button onClick={appendIngredient}>Add another ingredient</button>
+        <FormButton onClick={appendIngredient}>
+          Add another ingredient
+        </FormButton>
       </LeftColumn>
       <RightColumn>
         <StyledInput
@@ -165,6 +176,7 @@ export const RecipeForm: React.FC = () => {
           label="Preparation"
           id="preparation"
           value={recipe.preparation}
+          rows={4}
           onChange={(e: any) =>
             setRecipe({ ...recipe, preparation: e.target.value })
           }
@@ -173,11 +185,12 @@ export const RecipeForm: React.FC = () => {
           label="Cooking Directions"
           id="directions"
           value={recipe.directions}
+          rows={4}
           onChange={(e: any) =>
             setRecipe({ ...recipe, directions: e.target.value })
           }
         />
-        <button onClick={submitRecipe}>Submit!</button>
+        <FormButton onClick={submitRecipe}>Submit!</FormButton>
       </RightColumn>
     </RecipeFormPage>
   )

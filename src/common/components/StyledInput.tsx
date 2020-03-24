@@ -7,16 +7,38 @@ export type StyledInputProps = {
   [rest: string]: any
 }
 
+const InputWithStyle = styled.input`
+  height 24px;
+  border-radius: 5px;
+  border: 1px solid black;
+  margin: 4px 0;
+`
+
+const TextAreaWithStyle = styled.textarea`
+  border-radius: 5px;
+  border: 1px solid black;
+  margin: 4px 0;
+`
+
+const LabelWithStyle = styled.label`
+  margin: 4px 0;
+`
+
+const FormElementDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+`
+
 export const StyledInput: React.FC<StyledInputProps> = ({
   label,
   id,
   ...rest
 }) => {
   return (
-    <>
-      <label htmlFor={id}>{label}</label>
-      <input id={id} {...rest} />
-    </>
+    <FormElementDiv>
+      <LabelWithStyle htmlFor={id}>{label}</LabelWithStyle>
+      <InputWithStyle id={id} {...rest} />
+    </FormElementDiv>
   )
 }
 
@@ -26,9 +48,9 @@ export const StyledTextarea: React.FC<StyledInputProps> = ({
   ...rest
 }) => {
   return (
-    <>
-      <label htmlFor={id}>{label}</label>
-      <textarea id={id} {...rest} />
-    </>
+    <FormElementDiv>
+      <LabelWithStyle htmlFor={id}>{label}</LabelWithStyle>
+      <TextAreaWithStyle id={id} {...rest} />
+    </FormElementDiv>
   )
 }
