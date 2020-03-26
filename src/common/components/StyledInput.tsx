@@ -12,12 +12,18 @@ const InputWithStyle = styled.input`
   border-radius: 5px;
   border: 1px solid black;
   margin: 4px 0;
+  font-family: arial;
+  font-size: 14px;
+  padding: 0 4px;
 `
 
 const TextAreaWithStyle = styled.textarea`
   border-radius: 5px;
   border: 1px solid black;
   margin: 4px 0;
+  font-family: arial;
+  font-size: 14px;
+  padding: 4px;
 `
 
 const LabelWithStyle = styled.label`
