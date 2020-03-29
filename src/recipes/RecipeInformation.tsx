@@ -1,5 +1,16 @@
 import React from 'react'
-import { ShowIfArrayHasData, ShowIfStringHasData } from '../common/components'
+import {
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+} from '@reach/accordion'
+import '@reach/accordion/styles.css'
+import {
+  ShowIfArrayHasData,
+  ShowIfStringHasData,
+  ParagraphTextOrDefault,
+} from '../common/components'
 import { RecipeProps } from './recipesInterfaces'
 
 export const RecipeInformation: React.FC<{ recipe: RecipeProps | null }> = ({
@@ -19,22 +30,40 @@ export const RecipeInformation: React.FC<{ recipe: RecipeProps | null }> = ({
         <ShowIfStringHasData string={recipe.cookTime}>
           <div>{`Cook Time - ${recipe.cookTime}`}</div>
         </ShowIfStringHasData>
-        <h2>Ingredients</h2>
-        <ShowIfArrayHasData array={recipe.ingredients}>
-          <ul>
-            {recipe.ingredients.map((ingredient) => (
-              <li key={ingredient.id}>{ingredient.item}</li>
-            ))}
-          </ul>
-        </ShowIfArrayHasData>
-        <h2>Preparation</h2>
-        <ShowIfStringHasData string={recipe.preparation}>
-          <p>{recipe.preparation}</p>
-        </ShowIfStringHasData>
-        <h2>Cooking Directions</h2>
-        <ShowIfStringHasData string={recipe.directions}>
-          <p>{recipe.directions}</p>
-        </ShowIfStringHasData>
+        <Accordion multiple defaultIndex={[0, 1, 2]} translate="no">
+          <AccordionItem>
+            <AccordionButton as="h3">Ingredients</AccordionButton>
+            <AccordionPanel>
+              <ShowIfArrayHasData array={recipe.ingredients}>
+                <ul>
+                  {recipe.ingredients.map((ingredient) => (
+                    <li
+                      key={ingredient.id}
+                    >{`${ingredient.quantity} ${ingredient.measurement} ${ingredient.item}`}</li>
+                  ))}
+                </ul>
+              </ShowIfArrayHasData>
+            </AccordionPanel>
+          </AccordionItem>
+          <AccordionItem>
+            <AccordionButton as="h3">Preparation</AccordionButton>
+            <AccordionPanel>
+              <ParagraphTextOrDefault
+                text={recipe.preparation}
+                defaultText="There are no preparation details."
+              />
+            </AccordionPanel>
+          </AccordionItem>
+          <AccordionItem>
+            <AccordionButton as="h3">Cooking Directions</AccordionButton>
+            <AccordionPanel>
+              <ParagraphTextOrDefault
+                text={recipe.directions}
+                defaultText="There are no cooking direction details."
+              />
+            </AccordionPanel>
+          </AccordionItem>
+        </Accordion>
       </ShowIfStringHasData>
     </>
   )

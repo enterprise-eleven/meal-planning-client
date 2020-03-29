@@ -104,7 +104,8 @@ export const RecipeForm: React.FC = () => {
         await submitRecipe(values)
         resetForm()
       }}
-      render={({ values, setFieldValue, getFieldProps, handleSubmit }) => {
+    >
+      {({ values, setFieldValue, getFieldProps, handleSubmit }) => {
         return (
           <form onSubmit={handleSubmit}>
             <RecipeFormPage>
@@ -175,6 +176,6 @@ export const RecipeForm: React.FC = () => {
           </form>
         )
       }}
-    />
+    </Formik>
   )
 }
