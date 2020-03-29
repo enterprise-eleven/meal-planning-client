@@ -23,7 +23,7 @@ export const RecipeInformation: React.FC<{ recipe: RecipeProps | null }> = ({
         <ShowIfArrayHasData array={recipe.ingredients}>
           <ul>
             {recipe.ingredients.map((ingredient) => (
-              <li>{ingredient.item}</li>
+              <li key={ingredient.id}>{ingredient.item}</li>
             ))}
           </ul>
         </ShowIfArrayHasData>

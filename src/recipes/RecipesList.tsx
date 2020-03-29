@@ -32,7 +32,7 @@ export const RecipesList: React.FC<RecipesListProps> = ({
 }) => {
   return (
     <List>
-      {recipes.map((recipe, index) => {
+      {recipes.map((recipe) => {
         const isSelected =
           selectedRecipe !== null && selectedRecipe.id === recipe.id
         return (

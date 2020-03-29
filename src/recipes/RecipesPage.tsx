@@ -8,7 +8,7 @@ import { RecipeProps } from './recipesInterfaces'
 import { RecipeForm } from './RecipeForm'
 
 const RECIPES = gql`
-  {
+  query AllRecipes {
     recipes {
       cookTime
       directions

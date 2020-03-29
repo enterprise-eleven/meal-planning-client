@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { Formik } from 'formik'
 import { useMutation } from '@apollo/react-hooks'
 import { gql } from 'apollo-boost'
 import { StyledInput, StyledTextarea } from '../common/components'
@@ -26,6 +27,15 @@ const emptyIngredient: Ingredient = {
   item: '',
   quantity: 0,
   measurement: '',
+}
+
+const emptyRecipe: RecipeProps = {
+  name: '',
+  ingredients: [emptyIngredient],
+  prepTime: '',
+  cookTime: '',
+  preparation: '',
+  directions: '',
 }
 
 const RecipeFormPage = styled.div`
@@ -63,14 +73,10 @@ const FormButton = styled.button`
 `
 
 export const RecipeForm: React.FC = () => {
-  const [recipe, setRecipe] = React.useState<RecipeProps>({
-    name: '',
-    ingredients: [emptyIngredient],
-  })
   const [addRecipe] = useMutation(ADD_RECIPE)
   const [addIngredients] = useMutation(ADD_INGREDIENTS)
-  console.log(recipe)
-  const submitRecipe = async () => {
+
+  const submitRecipe = async (recipe: RecipeProps) => {
     const { ingredients = [], ...rest } = recipe
 
     const {
@@ -87,111 +93,88 @@ export const RecipeForm: React.FC = () => {
           recipeId,
         })),
       },
-    })
-  }
-
-  const updateIngredientByIndex = (indexToUpdate: Number, update: any) => {
-    const newIngredients = recipe.ingredients.map(
-      (ingredient: Ingredient, index: Number) => {
-        if (index === indexToUpdate) {
-          return { ...ingredient, ...update }
-        }
-
-        return ingredient
-      },
-    )
-    setRecipe({ ...recipe, ingredients: newIngredients })
-  }
-
-  const appendIngredient = () => {
-    setRecipe({
-      ...recipe,
-      ingredients: [...recipe.ingredients, emptyIngredient],
+      refetchQueries: ['AllRecipes'],
     })
   }
 
   return (
-    <RecipeFormPage>
-      <LeftColumn>
-        <StyledInput
-          label="Name"
-          id="name"
-          required
-          value={recipe.name}
-          onChange={(e: any) => setRecipe({ ...recipe, name: e.target.value })}
-        />
-        {recipe.ingredients &&
-          recipe.ingredients.map((ingredient: Ingredient, index: number) => (
-            <IngredientColumn key={index}>
-              <StyledInput
-                label="Number"
-                id={`number-${index}`}
-                value={ingredient.quantity}
-                onChange={(e: any) =>
-                  updateIngredientByIndex(index, { quantity: e.target.value })
-                }
-              />
-              <StyledInput
-                label="Measurement"
-                id={`measurement-${index}`}
-                value={ingredient.measurement}
-                onChange={(e: any) =>
-                  updateIngredientByIndex(index, {
-                    measurement: e.target.value,
-                  })
-                }
-              />
-              <StyledInput
-                label="Ingredient"
-                id={`ingredient-${index}`}
-                value={ingredient.item}
-                onChange={(e: any) =>
-                  updateIngredientByIndex(index, { item: e.target.value })
-                }
-              />
-            </IngredientColumn>
-          ))}
-        <FormButton onClick={appendIngredient}>
-          Add another ingredient
-        </FormButton>
-      </LeftColumn>
-      <RightColumn>
-        <StyledInput
-          label="Prep Time"
-          id="prep-time"
-          value={recipe.prepTime}
-          onChange={(e: any) =>
-            setRecipe({ ...recipe, prepTime: e.target.value })
-          }
-        />
-        <StyledInput
-          label="Cook Time"
-          id="cook-time"
-          value={recipe.cookTime}
-          onChange={(e: any) =>
-            setRecipe({ ...recipe, cookTime: e.target.value })
-          }
-        />
-        <StyledTextarea
-          label="Preparation"
-          id="preparation"
-          value={recipe.preparation}
-          rows={4}
-          onChange={(e: any) =>
-            setRecipe({ ...recipe, preparation: e.target.value })
-          }
-        />
-        <StyledTextarea
-          label="Cooking Directions"
-          id="directions"
-          value={recipe.directions}
-          rows={4}
-          onChange={(e: any) =>
-            setRecipe({ ...recipe, directions: e.target.value })
-          }
-        />
-        <FormButton onClick={submitRecipe}>Submit!</FormButton>
-      </RightColumn>
-    </RecipeFormPage>
+    <Formik
+      initialValues={emptyRecipe}
+      onSubmit={async (values, { resetForm }) => {
+        await submitRecipe(values)
+        resetForm()
+      }}
+      render={({ values, setFieldValue, getFieldProps, handleSubmit }) => {
+        return (
+          <form onSubmit={handleSubmit}>
+            <RecipeFormPage>
+              <LeftColumn>
+                <StyledInput
+                  label="Name"
+                  name="name"
+                  {...getFieldProps('name')}
+                />
+                {values.ingredients.map(
+                  (ingredient: Ingredient, index: number) => (
+                    <IngredientColumn key={index}>
+                      <StyledInput
+                        label="Number"
+                        name={`ingredients[${index}].quantity`}
+                        {...getFieldProps(`ingredients[${index}].quantity`)}
+                      />
+                      <StyledInput
+                        label="Measurement"
+                        name={`ingredients[${index}].measurement`}
+                        {...getFieldProps(`ingredients[${index}].measurement`)}
+                      />
+                      <StyledInput
+                        label="Ingredient"
+                        name={`ingredients[${index}].item`}
+                        {...getFieldProps(`ingredients[${index}].item`)}
+                      />
+                    </IngredientColumn>
+                  ),
+                )}
+                <FormButton
+                  onClick={() => {
+                    setFieldValue('ingredients', [
+                      ...values.ingredients,
+                      emptyIngredient,
+                    ])
+                  }}
+                >
+                  Add another ingredient
+                </FormButton>
+              </LeftColumn>
+              <RightColumn>
+                <StyledInput
+                  label="Prep Time"
+                  name="prepTime"
+                  {...getFieldProps('prepTime')}
+                />
+                <StyledInput
+                  label="Cook Time"
+                  name="cookTime"
+                  {...getFieldProps('cookTime')}
+                />
+                <StyledTextarea
+                  label="Preparation"
+                  name="preparation"
+                  rows={4}
+                  {...getFieldProps('preparation')}
+                />
+                <StyledTextarea
+                  label="Cooking Directions"
+                  name="directions"
+                  rows={4}
+                  {...getFieldProps('directions')}
+                />
+                <FormButton type="submit">Submit!</FormButton>
+              </RightColumn>
+            </RecipeFormPage>
+          </form>
+        )
+      }}
+    />
   )
 }

@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 export type StyledInputProps = {
   label: string
-  id: string
+  name: string
   [rest: string]: any
 }
 
@@ -37,26 +37,26 @@ const FormElementDiv = styled.div`
 
 export const StyledInput: React.FC<StyledInputProps> = ({
   label,
-  id,
+  name,
   ...rest
 }) => {
   return (
     <FormElementDiv>
-      <LabelWithStyle htmlFor={id}>{label}</LabelWithStyle>
-      <InputWithStyle id={id} {...rest} />
+      <LabelWithStyle htmlFor={name}>{label}</LabelWithStyle>
+      <InputWithStyle id={name} {...rest} />
     </FormElementDiv>
   )
 }
 
 export const StyledTextarea: React.FC<StyledInputProps> = ({
   label,
-  id,
+  name,
   ...rest
 }) => {
   return (
     <FormElementDiv>
-      <LabelWithStyle htmlFor={id}>{label}</LabelWithStyle>
-      <TextAreaWithStyle id={id} {...rest} />
+      <LabelWithStyle htmlFor={name}>{label}</LabelWithStyle>
+      <TextAreaWithStyle id={name} {...rest} />
     </FormElementDiv>
   )
 }

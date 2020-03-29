@@ -15,6 +15,7 @@ export interface RecipesListProps {
 }
 
 export interface Ingredient {
+  id?: number
   quantity?: number
   measurement?: string
   item?: string
