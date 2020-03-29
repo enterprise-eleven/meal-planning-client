@@ -2,8 +2,13 @@ import React from 'react'
 import styled, { css } from 'styled-components'
 import { RecipesListProps } from './recipesInterfaces'
 
+const ScrollingListSection = styled.div`
+  overflow-y: auto;
+`
+
 const List = styled.ul`
   padding: 0;
+  margin: 0;
 `
 
 interface SelectedProps {
@@ -31,22 +36,24 @@ export const RecipesList: React.FC<RecipesListProps> = ({
   selectRecipe,
 }) => {
   return (
-    <List>
-      {recipes.map((recipe) => {
-        const isSelected =
-          selectedRecipe !== null && selectedRecipe.id === recipe.id
-        return (
-          <ListItem
-            key={recipe.id}
-            onClick={() => {
-              selectRecipe(recipe)
-            }}
-            isSelected={isSelected}
-          >
-            {recipe.name}
-          </ListItem>
-        )
-      })}
-    </List>
+    <ScrollingListSection>
+      <List>
+        {recipes.map((recipe) => {
+          const isSelected =
+            selectedRecipe !== null && selectedRecipe.id === recipe.id
+          return (
+            <ListItem
+              key={recipe.id}
+              onClick={() => {
+                selectRecipe(recipe)
+              }}
+              isSelected={isSelected}
+            >
+              {recipe.name}
+            </ListItem>
+          )
+        })}
+      </List>
+    </ScrollingListSection>
   )
 }

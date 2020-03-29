@@ -21,7 +21,7 @@ const Page = styled.div`
 const Section = styled.section`
   flex: 1;
   padding: 16px;
-  height: 100%;
+  height: calc(100% - 104px);
 `
 
 const App: React.FC = () => {

@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { RecipesList } from './RecipesList'
 import { RecipeInformation } from './RecipeInformation'
 import { RecipeProps } from './recipesInterfaces'
-import { RecipeForm } from './RecipeForm'
+import { AddRecipe } from './AddRecipe'
 
 const RECIPES = gql`
   query AllRecipes {
@@ -30,6 +30,7 @@ const RecipesPageStyled = styled.div`
   display: flex;
   flex-direction: row;
   padding: 24px;
+  height: calc(100% - 48px);
 `
 
 const ListSectionStyled = styled.div`
@@ -40,6 +41,8 @@ const ListSectionStyled = styled.div`
 
 const AddButton = styled.button`
   height: 32px;
+  margin-right: 16px;
+  margin-bottom: 16px;
 `
 
 const RecipeSection = styled.div`
@@ -83,7 +86,7 @@ export const RecipesPage = () => {
       </ListSectionStyled>
       <RecipeSection>
         {addRecipe ? (
-          <RecipeForm />
+          <AddRecipe />
         ) : (
           <RecipeInformation recipe={selectedRecipe} />
         )}

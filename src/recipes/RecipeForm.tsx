@@ -1,42 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Formik } from 'formik'
-import { useMutation } from '@apollo/react-hooks'
-import { gql } from 'apollo-boost'
 import { StyledInput, StyledTextarea } from '../common/components'
 import { Ingredient, RecipeProps } from './recipesInterfaces'
-
-const ADD_RECIPE = gql`
-  mutation InsertRecipes($recipes: [recipes_insert_input!]!) {
-    insert_recipes(objects: $recipes) {
-      returning {
-        id
-      }
-    }
-  }
-`
-const ADD_INGREDIENTS = gql`
-  mutation InsertIngredients($ingredients: [ingredients_insert_input!]!) {
-    insert_ingredients(objects: $ingredients) {
-      affected_rows
-    }
-  }
-`
-
-const emptyIngredient: Ingredient = {
-  item: '',
-  quantity: 0,
-  measurement: '',
-}
-
-const emptyRecipe: RecipeProps = {
-  name: '',
-  ingredients: [emptyIngredient],
-  prepTime: '',
-  cookTime: '',
-  preparation: '',
-  directions: '',
-}
 
 const RecipeFormPage = styled.div`
   display: flex;
@@ -72,34 +38,33 @@ const FormButton = styled.button`
   border: 1px solid black;
 `
 
-export const RecipeForm: React.FC = () => {
-  const [addRecipe] = useMutation(ADD_RECIPE)
-  const [addIngredients] = useMutation(ADD_INGREDIENTS)
+export const emptyIngredient: Ingredient = {
+  item: '',
+  quantity: 0,
+  measurement: '',
+}
 
-  const submitRecipe = async (recipe: RecipeProps) => {
-    const { ingredients = [], ...rest } = recipe
+export const emptyRecipe: RecipeProps = {
+  name: '',
+  ingredients: [emptyIngredient],
+  prepTime: '',
+  cookTime: '',
+  preparation: '',
+  directions: '',
+}
 
-    const {
-      data: {
-        insert_recipes: {
-          returning: [{ id: recipeId }],
-        },
-      },
-    } = await addRecipe({ variables: { recipes: [rest] } })
-    await addIngredients({
-      variables: {
-        ingredients: ingredients.map((ingredient) => ({
-          ...ingredient,
-          recipeId,
-        })),
-      },
-      refetchQueries: ['AllRecipes'],
-    })
-  }
+type P = {
+  submitRecipe: (values: RecipeProps) => void
+  recipe?: RecipeProps
+}
 
+export const RecipeForm: React.FC<P> = ({
+  submitRecipe,
+  recipe = emptyRecipe,
+}) => {
   return (
     <Formik
-      initialValues={emptyRecipe}
+      initialValues={recipe}
       onSubmit={async (values, { resetForm }) => {
         await submitRecipe(values)
         resetForm()
