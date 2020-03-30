@@ -1,9 +1,11 @@
 import React from 'react'
+import { useRouteMatch } from 'react-router'
+import { Link } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 import { RecipesListProps } from './recipesInterfaces'
 
 const ScrollingListSection = styled.div`
-  overflow-y: auto;
+  overflow-y: scroll;
 `
 
 const List = styled.ul`
@@ -12,10 +14,10 @@ const List = styled.ul`
 `
 
 interface SelectedProps {
-  isSelected: boolean
+  isSelected?: boolean
 }
 
-const ListItem = styled.li<SelectedProps>`
+const ListItem = styled(Link)<SelectedProps>`
   height: 32px;
   padding-left: 16px;
   display: flex;
@@ -30,25 +32,14 @@ const ListItem = styled.li<SelectedProps>`
     `}
 `
 
-export const RecipesList: React.FC<RecipesListProps> = ({
-  recipes,
-  selectedRecipe,
-  selectRecipe,
-}) => {
+export const RecipesList: React.FC<RecipesListProps> = ({ recipes }) => {
+  let { path } = useRouteMatch()
   return (
     <ScrollingListSection>
       <List>
         {recipes.map((recipe) => {
-          const isSelected =
-            selectedRecipe !== null && selectedRecipe.id === recipe.id
           return (
-            <ListItem
-              key={recipe.id}
-              onClick={() => {
-                selectRecipe(recipe)
-              }}
-              isSelected={isSelected}
-            >
+            <ListItem key={recipe.id} to={`${path}/${recipe.id}`}>
               {recipe.name}
             </ListItem>
           )

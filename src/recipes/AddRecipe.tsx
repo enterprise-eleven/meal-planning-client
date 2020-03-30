@@ -3,6 +3,7 @@ import { useMutation } from '@apollo/react-hooks'
 import { gql } from 'apollo-boost'
 import { RecipeProps } from './recipesInterfaces'
 import { RecipeForm } from './RecipeForm'
+import { useHistory, useRouteMatch } from 'react-router'
 
 const ADD_RECIPE = gql`
   mutation InsertRecipes($recipes: [recipes_insert_input!]!) {
@@ -13,6 +14,7 @@ const ADD_RECIPE = gql`
     }
   }
 `
+
 const ADD_INGREDIENTS = gql`
   mutation InsertIngredients($ingredients: [ingredients_insert_input!]!) {
     insert_ingredients(objects: $ingredients) {
@@ -22,6 +24,8 @@ const ADD_INGREDIENTS = gql`
 `
 
 export const AddRecipe: React.FC = () => {
+  const history = useHistory()
+  let { url } = useRouteMatch()
   const [addRecipe] = useMutation(ADD_RECIPE)
   const [addIngredients] = useMutation(ADD_INGREDIENTS)
 
@@ -44,6 +48,8 @@ export const AddRecipe: React.FC = () => {
       },
       refetchQueries: ['AllRecipes'],
     })
+
+    history.push(`${url.substring(0, url.lastIndexOf('/add'))}/${recipeId}`)
   }
 
   return <RecipeForm submitRecipe={submitRecipe} />

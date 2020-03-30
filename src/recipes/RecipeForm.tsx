@@ -67,7 +67,6 @@ export const RecipeForm: React.FC<P> = ({
       initialValues={recipe}
       onSubmit={async (values, { resetForm }) => {
         await submitRecipe(values)
-        resetForm()
       }}
     >
       {({ values, setFieldValue, getFieldProps, handleSubmit }) => {
@@ -108,6 +107,7 @@ export const RecipeForm: React.FC<P> = ({
                       emptyIngredient,
                     ])
                   }}
+                  type="button"
                 >
                   Add another ingredient
                 </FormButton>

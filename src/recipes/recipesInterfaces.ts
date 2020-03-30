@@ -8,10 +8,17 @@ export interface RecipeProps {
   directions?: string
 }
 
+export interface RecipeQuery {
+  recipes_by_pk: RecipeProps
+}
+
+export interface RecipeListProps {
+  id?: string
+  name: string
+}
+
 export interface RecipesListProps {
-  recipes: RecipeProps[]
-  selectedRecipe: RecipeProps | null
-  selectRecipe(recipe: RecipeProps): void
+  recipes: RecipeListProps[]
 }
 
 export interface Ingredient {

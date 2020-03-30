@@ -1,27 +1,20 @@
 import React from 'react'
 import { useQuery } from '@apollo/react-hooks'
 import { gql } from 'apollo-boost'
+import { useRouteMatch } from 'react-router'
+import { Link, Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
 import { RecipesList } from './RecipesList'
 import { RecipeInformation } from './RecipeInformation'
-import { RecipeProps } from './recipesInterfaces'
 import { AddRecipe } from './AddRecipe'
+import { LinkButton } from '../common/components'
+import { EditRecipe } from './EditRecipe'
 
 const RECIPES = gql`
   query AllRecipes {
     recipes {
-      cookTime
-      directions
       id
-      ingredients {
-        item
-        measurement
-        quantity
-        id
-      }
       name
-      prepTime
-      preparation
     }
   }
 `
@@ -39,29 +32,14 @@ const ListSectionStyled = styled.div`
   flex-direction: column;
 `
 
-const AddButton = styled.button`
-  height: 32px;
-  margin-right: 16px;
-  margin-bottom: 16px;
-`
-
 const RecipeSection = styled.div`
   flex: 4;
   padding-left: 32px;
 `
 
-export const RecipesPage = () => {
-  const [
-    selectedRecipe,
-    setSelectedRecipe,
-  ] = React.useState<RecipeProps | null>(null)
-  const [addRecipe, setAddRecipe] = React.useState<Boolean>(false)
+export const RecipesPage: React.FC = () => {
   const { loading, error, data } = useQuery(RECIPES)
-
-  const selectRecipe = (recipe: RecipeProps) => {
-    setSelectedRecipe(recipe)
-    setAddRecipe(false)
-  }
+  let { path } = useRouteMatch()
 
   if (loading || error) {
     // TODO Handle loading / error cases
@@ -70,26 +48,15 @@ export const RecipesPage = () => {
   return (
     <RecipesPageStyled>
       <ListSectionStyled>
-        <AddButton
-          onClick={() => {
-            setSelectedRecipe(null)
-            setAddRecipe(true)
-          }}
-        >
-          Add a Recipe!
-        </AddButton>
-        <RecipesList
-          recipes={data.recipes}
-          selectedRecipe={selectedRecipe}
-          selectRecipe={selectRecipe}
-        />
+        <LinkButton to={`${path}/add`}>Add a Recipe!</LinkButton>
+        <RecipesList recipes={data.recipes} />
       </ListSectionStyled>
       <RecipeSection>
-        {addRecipe ? (
-          <AddRecipe />
-        ) : (
-          <RecipeInformation recipe={selectedRecipe} />
-        )}
+        <Switch>
+          <Route path={`${path}/add`} render={() => <AddRecipe />} />
+          <Route path={`${path}/:id/edit`} render={() => <EditRecipe />} />
+          <Route path={`${path}/:id`} render={() => <RecipeInformation />} />
+        </Switch>
       </RecipeSection>
     </RecipesPageStyled>
   )

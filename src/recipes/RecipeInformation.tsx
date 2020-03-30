@@ -5,23 +5,60 @@ import {
   AccordionButton,
   AccordionPanel,
 } from '@reach/accordion'
-import '@reach/accordion/styles.css'
+import { useQuery } from '@apollo/react-hooks'
+import { gql } from 'apollo-boost'
+import styled from 'styled-components'
+import { Link } from 'react-router-dom'
+import { useParams, useRouteMatch } from 'react-router'
 import {
   ShowIfArrayHasData,
   ShowIfStringHasData,
   ParagraphTextOrDefault,
+  LinkButton,
 } from '../common/components'
-import { RecipeProps } from './recipesInterfaces'
+import { Ingredient } from './recipesInterfaces'
+import '@reach/accordion/styles.css'
 
-export const RecipeInformation: React.FC<{ recipe: RecipeProps | null }> = ({
-  recipe,
-}) => {
+const RECIPE = gql`
+  query GetRecipe($id: Int!) {
+    recipes_by_pk(id: $id) {
+      cookTime
+      directions
+      id
+      ingredients {
+        item
+        measurement
+        quantity
+        id
+      }
+      name
+      prepTime
+      preparation
+    }
+  }
+`
+
+export const RecipeInformation: React.FC = () => {
+  const { id } = useParams()
+  let { url } = useRouteMatch()
+  const { loading, error, data } = useQuery(RECIPE, {
+    variables: { id },
+  })
+
+  if (loading || error) {
+    // TODO Handle loading / error cases
+    return <div>None</div>
+  }
+
+  const { recipes_by_pk: recipe } = data
+
   if (recipe === null) {
     return <h1>Please select a recipe.</h1>
   }
 
   return (
     <>
+      <LinkButton to={`${url}/edit`}>Edit Recipe!</LinkButton>
       <ShowIfStringHasData string={recipe.id}>
         <h1>{recipe.name}</h1>
         <ShowIfStringHasData string={recipe.prepTime}>
@@ -36,7 +73,7 @@ export const RecipeInformation: React.FC<{ recipe: RecipeProps | null }> = ({
             <AccordionPanel>
               <ShowIfArrayHasData array={recipe.ingredients}>
                 <ul>
-                  {recipe.ingredients.map((ingredient) => (
+                  {recipe.ingredients.map((ingredient: Ingredient) => (
                     <li
                       key={ingredient.id}
                     >{`${ingredient.quantity} ${ingredient.measurement} ${ingredient.item}`}</li>
