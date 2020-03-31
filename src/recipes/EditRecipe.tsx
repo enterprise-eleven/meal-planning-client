@@ -70,7 +70,7 @@ const ADD_INGREDIENTS = gql`
 export const EditRecipe: React.FC = () => {
   const { id } = useParams()
   const history = useHistory()
-  let { url } = useRouteMatch()
+  const { url } = useRouteMatch()
   const { loading, error, data } = useQuery<RecipeQuery>(RECIPE, {
     variables: { id },
   })
@@ -92,23 +92,19 @@ export const EditRecipe: React.FC = () => {
       ingredients,
     )
 
-    const {
-      data: {
-        update_recipes: { returning },
-      },
-    } = await updateRecipe({
+    await updateRecipe({
       variables: { id, recipe: omit(['__typename'], rest) },
     })
 
     await Promise.all(
-      ingredientsToUpdate.map((ingredient) => {
+      ingredientsToUpdate.map((ingredient) =>
         updateIngredients({
           variables: {
             id: ingredient.id,
             ingredient: omit(['__typename'], ingredient),
           },
-        })
-      }),
+        }),
+      ),
     )
 
     await addIngredients({

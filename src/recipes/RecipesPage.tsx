@@ -1,8 +1,9 @@
 import React from 'react'
 import { useQuery } from '@apollo/react-hooks'
 import { gql } from 'apollo-boost'
+import { sortBy } from 'lodash/fp'
 import { useRouteMatch } from 'react-router'
-import { Link, Route, Switch } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 import styled from 'styled-components'
 import { RecipesList } from './RecipesList'
 import { RecipeInformation } from './RecipeInformation'
@@ -39,7 +40,7 @@ const RecipeSection = styled.div`
 
 export const RecipesPage: React.FC = () => {
   const { loading, error, data } = useQuery(RECIPES)
-  let { path } = useRouteMatch()
+  const { path } = useRouteMatch()
 
   if (loading || error) {
     // TODO Handle loading / error cases
@@ -49,7 +50,7 @@ export const RecipesPage: React.FC = () => {
     <RecipesPageStyled>
       <ListSectionStyled>
         <LinkButton to={`${path}/add`}>Add a Recipe!</LinkButton>
-        <RecipesList recipes={data.recipes} />
+        <RecipesList recipes={sortBy('name', data.recipes)} />
       </ListSectionStyled>
       <RecipeSection>
         <Switch>

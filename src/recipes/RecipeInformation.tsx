@@ -7,8 +7,6 @@ import {
 } from '@reach/accordion'
 import { useQuery } from '@apollo/react-hooks'
 import { gql } from 'apollo-boost'
-import styled from 'styled-components'
-import { Link } from 'react-router-dom'
 import { useParams, useRouteMatch } from 'react-router'
 import {
   ShowIfArrayHasData,
@@ -40,7 +38,7 @@ const RECIPE = gql`
 
 export const RecipeInformation: React.FC = () => {
   const { id } = useParams()
-  let { url } = useRouteMatch()
+  const { url } = useRouteMatch()
   const { loading, error, data } = useQuery(RECIPE, {
     variables: { id },
   })

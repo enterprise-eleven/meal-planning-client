@@ -25,7 +25,7 @@ const ADD_INGREDIENTS = gql`
 
 export const AddRecipe: React.FC = () => {
   const history = useHistory()
-  let { url } = useRouteMatch()
+  const { url } = useRouteMatch()
   const [addRecipe] = useMutation(ADD_RECIPE)
   const [addIngredients] = useMutation(ADD_INGREDIENTS)
 

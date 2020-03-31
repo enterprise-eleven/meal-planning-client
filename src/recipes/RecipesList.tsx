@@ -24,6 +24,12 @@ const ListItem = styled(Link)<SelectedProps>`
   justify-content: left;
   align-items: center;
   border: 1px solid black;
+  color: black;
+  background-color: white;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: inherit;
+  text-align: center;
 
   ${(props) =>
     props.isSelected &&
@@ -33,7 +39,7 @@ const ListItem = styled(Link)<SelectedProps>`
 `
 
 export const RecipesList: React.FC<RecipesListProps> = ({ recipes }) => {
-  let { path } = useRouteMatch()
+  const { path } = useRouteMatch()
   return (
     <ScrollingListSection>
       <List>
