@@ -4,9 +4,11 @@ import { Route, Switch } from 'react-router-dom'
 import { gql, useQuery } from '@apollo/client'
 import { sortBy, prop, compose, toLower } from 'ramda'
 import { Box, Stack } from '@chakra-ui/core'
-import { RecipeListProps } from './recipesInterfaces'
+import { AllRecipesQuery } from './recipesInterfaces'
 import { RecipesList } from './RecipesList'
 import { RecipeView } from './RecipeView'
+import { AddRecipe } from './AddRecipe'
+import { EditRecipe } from './EditRecipe'
 
 const RECIPES = gql`
   query AllRecipes {
@@ -18,7 +20,7 @@ const RECIPES = gql`
 `
 
 export const Recipes: React.FC = () => {
-  const { loading, error, data } = useQuery(RECIPES)
+  const { loading, error, data } = useQuery<AllRecipesQuery>(RECIPES)
   const { path } = useRouteMatch()
 
   if (loading) {
@@ -30,9 +32,7 @@ export const Recipes: React.FC = () => {
     return <div>ERROR!</div>
   }
 
-  const sortedRecipes: Array<RecipeListProps> = sortBy(
-    compose(toLower, prop('name')),
-  )(data.recipes)
+  const sortedRecipes = sortBy(compose(toLower, prop('name')))(data!.recipes)
   return (
     <Stack direction="row" spacing={4}>
       <Box minW="225px" w="15%" p={2}>
@@ -41,10 +41,10 @@ export const Recipes: React.FC = () => {
       <Box w="100%" p={2}>
         <Switch>
           <Route path={`${path}/add`}>
-            <div>Add</div>
+            <AddRecipe />
           </Route>
           <Route path={`${path}/:id/edit`}>
-            <div>Edit</div>
+            <EditRecipe />
           </Route>
           <Route path={`${path}/:id`}>
             <RecipeView />

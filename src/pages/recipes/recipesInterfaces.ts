@@ -1,4 +1,4 @@
-export interface RecipeProps {
+export interface Recipe {
   id?: string
   name: string
   prepTime?: string
@@ -9,16 +9,20 @@ export interface RecipeProps {
 }
 
 export interface RecipeQuery {
-  recipes_by_pk: RecipeProps
+  recipes_by_pk: Recipe
 }
 
-export interface RecipeListProps {
+export interface AllRecipesQuery {
+  recipes: Array<RecipeShort>
+}
+
+export interface RecipeShort {
   id?: string
   name: string
 }
 
 export interface RecipesListProps {
-  recipes: RecipeListProps[]
+  recipes: RecipeShort[]
   path: string
 }
 

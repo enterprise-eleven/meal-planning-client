@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { gql, useMutation, useQuery } from '@apollo/client'
 import { ShowIfStringHasData } from '../../common/components/ShowIfStringHasData'
 import { ShowIfArrayHasData } from '../../common/components/ShowIfArrayHasData'
-import { Ingredient } from './recipesInterfaces'
+import { Ingredient, RecipeQuery } from './recipesInterfaces'
 import {
   IconButton,
   ButtonGroup,
@@ -51,7 +51,7 @@ export const RecipeView: React.FC = () => {
   const { id } = useParams()
   const { url } = useRouteMatch()
   const history = useHistory()
-  const { loading, error, data } = useQuery(RECIPE, {
+  const { loading, error, data } = useQuery<RecipeQuery>(RECIPE, {
     variables: { id },
   })
   const [deleteRecipeMutation] = useMutation(DELETE_RECIPE)
@@ -65,7 +65,7 @@ export const RecipeView: React.FC = () => {
     return <div>ERROR!</div>
   }
 
-  const { recipes_by_pk: recipe } = data
+  const { recipes_by_pk: recipe } = data!
 
   if (recipe === null) {
     return <h1>Please select a recipe.</h1>
