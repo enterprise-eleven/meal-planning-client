@@ -92,7 +92,7 @@ export const EditRecipe: React.FC = () => {
     )
 
     await updateRecipe({
-      variables: { id, recipe: omit(['__typename'], rest) },
+      variables: { id, recipe: omit(['__typename', 'id'], rest) },
     })
 
     await Promise.all(
@@ -100,7 +100,7 @@ export const EditRecipe: React.FC = () => {
         updateIngredients({
           variables: {
             id: ingredient.id,
-            ingredient: omit(['__typename'], ingredient),
+            ingredient: omit(['__typename', 'id'], ingredient),
           },
         }),
       ),

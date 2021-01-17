@@ -3,18 +3,16 @@ import ReactDOM from 'react-dom'
 import { App } from './App'
 import * as serviceWorker from './serviceWorker'
 import reportWebVitals from './reportWebVitals'
-import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
-
-const client = new ApolloClient({
-  uri: process.env.REACT_APP_API_URL,
-  cache: new InMemoryCache(),
-})
+import Auth0ProviderWithHistory from './auth/Auth0ProviderWithHistory'
+import { HasuraProvider } from './apollo/HasuraProvider'
 
 ReactDOM.render(
   <React.StrictMode>
-    <ApolloProvider client={client}>
-      <App />
-    </ApolloProvider>
+    <Auth0ProviderWithHistory>
+      <HasuraProvider>
+        <App />
+      </HasuraProvider>
+    </Auth0ProviderWithHistory>
   </React.StrictMode>,
   document.getElementById('root'),
 )
