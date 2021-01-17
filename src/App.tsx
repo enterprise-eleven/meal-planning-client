@@ -8,7 +8,7 @@ import { LoginButton, LogoutButton } from './auth/AuthButtons'
 
 export const App = () => {
   const { isAuthenticated } = useAuth0()
-  return (
+  return isAuthenticated ? (
     <ChakraProvider theme={theme}>
       <CSSReset />
       <BrowserRouter>
@@ -26,7 +26,7 @@ export const App = () => {
             <Link to="/admin">
               <Button>Admin</Button>
             </Link>
-            {isAuthenticated ? <LogoutButton /> : <LoginButton />}
+            <LogoutButton />
           </Stack>
         </Box>
         <Box w="100%" p={2}>
@@ -53,6 +53,15 @@ export const App = () => {
           </Switch>
         </Box>
       </BrowserRouter>
+    </ChakraProvider>
+  ) : (
+    <ChakraProvider theme={theme}>
+      <CSSReset />
+      <Box bg="gray.500" w="100%" p={4} d="flex" justifyContent="flex-end">
+        <Stack direction="row" spacing={4}>
+          <LoginButton />
+        </Stack>
+      </Box>
     </ChakraProvider>
   )
 }
