@@ -3,7 +3,7 @@ import { Recipe } from './recipesInterfaces'
 import { RecipeForm } from './RecipeForm'
 import { useHistory, useRouteMatch } from 'react-router'
 import { gql, useMutation } from '@apollo/client'
-import { useGetOrg } from '../../common/hooks/useGetOrg'
+import { useGetFamily } from '../../common/hooks/useGetFamily'
 
 const ADD_RECIPE = gql`
   mutation InsertRecipes($recipes: [recipes_insert_input!]!) {
@@ -28,7 +28,7 @@ export const AddRecipe: React.FC = () => {
   const { url } = useRouteMatch()
   const [addRecipe] = useMutation(ADD_RECIPE)
   const [addIngredients] = useMutation(ADD_INGREDIENTS)
-  const org = useGetOrg()
+  const family = useGetFamily()
 
   const submitRecipe = async (recipe: Recipe) => {
     const { ingredients = [], ...rest } = recipe
@@ -39,7 +39,7 @@ export const AddRecipe: React.FC = () => {
           returning: [{ id: recipeId }],
         },
       },
-    } = await addRecipe({ variables: { recipes: [{ ...rest, org }] } })
+    } = await addRecipe({ variables: { recipes: [{ ...rest, family }] } })
     await addIngredients({
       variables: {
         ingredients: ingredients.map((ingredient) => ({
