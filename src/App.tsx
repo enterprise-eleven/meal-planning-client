@@ -1,8 +1,9 @@
 import * as React from 'react'
 import { Link, BrowserRouter, Route, Switch } from 'react-router-dom'
-import { Box, Button, ChakraProvider, CSSReset, Stack } from '@chakra-ui/core'
+import { Box, Button, ChakraProvider, CSSReset, Stack } from '@chakra-ui/react'
 import theme from '@chakra-ui/theme'
 import { Recipes } from './pages/recipes/Recipes'
+import { Admin } from './pages/admin/Admin'
 import { useAuth0 } from '@auth0/auth0-react'
 import { LoginButton, LogoutButton } from './auth/AuthButtons'
 
@@ -44,12 +45,7 @@ export const App = () => {
                 return <div>People</div>
               }}
             />
-            <Route
-              path="/admin"
-              render={(props) => {
-                return <div>Admin</div>
-              }}
-            />
+            <Route path="/admin" render={() => <Admin />} />
           </Switch>
         </Box>
       </BrowserRouter>

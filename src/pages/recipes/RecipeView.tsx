@@ -14,7 +14,7 @@ import {
   Text,
   UnorderedList,
   ListItem,
-} from '@chakra-ui/core'
+} from '@chakra-ui/react'
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons'
 import { ParagraphTextOrDefault } from '../../common/components/ParagraphTextOrDefault'
 
@@ -48,6 +48,7 @@ const DELETE_RECIPE = gql`
 `
 
 export const RecipeView: React.FC = () => {
+  // @ts-ignore
   const { id } = useParams()
   const { url } = useRouteMatch()
   const history = useHistory()
@@ -109,8 +110,8 @@ export const RecipeView: React.FC = () => {
             >{`Cook Time - ${recipe.cookTime}`}</Text>
           </ShowIfStringHasData>
         </HStack>
-        <Heading size="md">Ingredients</Heading>
         <ShowIfArrayHasData array={recipe.ingredients}>
+          <Heading size="md">Ingredients</Heading>
           <UnorderedList>
             {recipe.ingredients.map((ingredient: Ingredient) => (
               <ListItem

@@ -9,7 +9,7 @@ import {
   HStack,
   VStack,
   Box,
-} from '@chakra-ui/core'
+} from '@chakra-ui/react'
 import { Ingredient, Recipe } from './recipesInterfaces'
 
 export const emptyIngredient: Ingredient = {

@@ -1,6 +1,6 @@
 import React from 'react'
 import { RecipesListProps } from './recipesInterfaces'
-import { Button, VStack } from '@chakra-ui/core'
+import { Button, VStack } from '@chakra-ui/react'
 import { Link } from 'react-router-dom'
 
 export const RecipesList: React.FC<RecipesListProps> = ({ recipes, path }) => {

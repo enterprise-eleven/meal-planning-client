@@ -67,6 +67,7 @@ const ADD_INGREDIENTS = gql`
 `
 
 export const EditRecipe: React.FC = () => {
+  // @ts-ignore
   const { id } = useParams()
   const history = useHistory()
   const { url } = useRouteMatch()
