@@ -3,14 +3,12 @@ import { Recipe } from './recipesInterfaces'
 import { RecipeForm } from './RecipeForm'
 import { useHistory, useRouteMatch } from 'react-router'
 import { gql, useMutation } from '@apollo/client'
-import { useGetFamily } from '../../common/hooks/useGetFamily'
+import { useGetUser } from '../../common/hooks/useGetUser'
 
 const ADD_RECIPE = gql`
-  mutation InsertRecipes($recipes: [recipes_insert_input!]!) {
-    insert_recipes(objects: $recipes) {
-      returning {
-        id
-      }
+  mutation InsertRecipe($recipe: recipes_insert_input!) {
+    insert_recipes_one(object: $recipe) {
+      id
     }
   }
 `
@@ -28,18 +26,16 @@ export const AddRecipe: React.FC = () => {
   const { url } = useRouteMatch()
   const [addRecipe] = useMutation(ADD_RECIPE)
   const [addIngredients] = useMutation(ADD_INGREDIENTS)
-  const family = useGetFamily()
+  const { family } = useGetUser()
 
   const submitRecipe = async (recipe: Recipe) => {
     const { ingredients = [], ...rest } = recipe
 
     const {
       data: {
-        insert_recipes: {
-          returning: [{ id: recipeId }],
-        },
+        insert_recipes_one: { id: recipeId },
       },
-    } = await addRecipe({ variables: { recipes: [{ ...rest, family }] } })
+    } = await addRecipe({ variables: { recipe: { ...rest, family } } })
     await addIngredients({
       variables: {
         ingredients: ingredients.map((ingredient) => ({

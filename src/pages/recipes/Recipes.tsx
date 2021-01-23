@@ -9,6 +9,8 @@ import { RecipesList } from './RecipesList'
 import { RecipeView } from './RecipeView'
 import { AddRecipe } from './AddRecipe'
 import { EditRecipe } from './EditRecipe'
+import { Loading } from '../../common/components/Loading'
+import { Error } from '../../common/components/Error'
 
 const RECIPES = gql`
   query AllRecipes {
@@ -24,12 +26,11 @@ export const Recipes: React.FC = () => {
   const { path } = useRouteMatch()
 
   if (loading) {
-    // TODO Handle loading / error cases
-    return <div>LOADING!</div>
+    return <Loading />
   }
+
   if (error) {
-    // TODO Handle loading / error cases
-    return <div>ERROR!</div>
+    return <Error />
   }
 
   const sortedRecipes = sortBy(compose(toLower, prop('name')))(data!.recipes)
