@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react'
 import { validate } from 'uuid'
-import { VStack, Box, Button, Stack, Input, Text } from '@chakra-ui/react'
+import { VStack, Button, Input, Text } from '@chakra-ui/react'
 import { gql, useMutation, useQuery } from '@apollo/client'
 
 const GET_FAMILY_BY_SECRET = gql`
