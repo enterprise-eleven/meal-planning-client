@@ -1,8 +1,9 @@
 import React from 'react'
 import { gql, useMutation, useQuery } from '@apollo/client'
 import { omit, partition } from 'lodash/fp'
+import { propOr, map, differenceWith, eqProps } from 'ramda'
 import { useHistory, useParams, useRouteMatch } from 'react-router'
-import { Recipe, RecipeQuery } from './recipesInterfaces'
+import { Ingredient, Recipe, RecipeQuery } from './recipesInterfaces'
 import { RecipeForm } from './RecipeForm'
 
 const RECIPE = gql`
@@ -18,6 +19,7 @@ const RECIPE = gql`
         id
       }
       name
+      source
       prepTime
       preparation
     }
@@ -26,21 +28,20 @@ const RECIPE = gql`
 
 const UPDATE_RECIPE = gql`
   mutation UpdateRecipe($id: Int!, $recipe: recipes_set_input!) {
-    update_recipes(where: { id: { _eq: $id } }, _set: $recipe) {
-      returning {
-        cookTime
-        directions
+    update_recipes_by_pk(pk_columns: { id: $id }, _set: $recipe) {
+      cookTime
+      directions
+      id
+      ingredients {
+        item
+        measurement
+        quantity
         id
-        ingredients {
-          item
-          measurement
-          quantity
-          id
-        }
-        name
-        prepTime
-        preparation
       }
+      name
+      source
+      prepTime
+      preparation
     }
   }
 `
@@ -66,6 +67,14 @@ const ADD_INGREDIENTS = gql`
   }
 `
 
+const DELETE_INGREDIENTS = gql`
+  mutation DeleteIngredients($ids: [Int!]!) {
+    delete_ingredients(where: { id: { _in: $ids } }) {
+      affected_rows
+    }
+  }
+`
+
 export const EditRecipe: React.FC = () => {
   // @ts-ignore
   const { id } = useParams()
@@ -77,6 +86,7 @@ export const EditRecipe: React.FC = () => {
   const [updateRecipe] = useMutation(UPDATE_RECIPE)
   const [updateIngredients] = useMutation(UPDATE_INGREDIENT)
   const [addIngredients] = useMutation(ADD_INGREDIENTS)
+  const [deleteIngredients] = useMutation(DELETE_INGREDIENTS)
 
   if (loading || error) {
     // TODO Handle loading / error cases
@@ -84,9 +94,15 @@ export const EditRecipe: React.FC = () => {
   }
 
   const { recipes_by_pk: recipe } = data!
+  const currentIngredients = recipe.ingredients
 
   const submitRecipe = async (recipe: Recipe) => {
     const { ingredients = [], ...rest } = recipe
+    const ingredientsToDelete = differenceWith(
+      (x, y) => eqProps('id', x, y),
+      currentIngredients,
+      ingredients,
+    )
     const [ingredientsToUpdate, ingredientsToAdd] = partition(
       (ingredient) => ingredient.id !== undefined,
       ingredients,
@@ -95,6 +111,12 @@ export const EditRecipe: React.FC = () => {
     await updateRecipe({
       variables: { id, recipe: omit(['__typename', 'id'], rest) },
     })
+
+    const idsToDelete = map<Ingredient, Number>(
+      propOr(0, 'id'),
+      ingredientsToDelete,
+    )
+    await deleteIngredients({ variables: { ids: idsToDelete } })
 
     await Promise.all(
       ingredientsToUpdate.map((ingredient) =>

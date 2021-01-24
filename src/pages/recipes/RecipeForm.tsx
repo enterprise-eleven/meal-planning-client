@@ -20,6 +20,7 @@ export const emptyIngredient: Ingredient = {
 
 export const emptyRecipe: Recipe = {
   name: '',
+  source: '',
   ingredients: [emptyIngredient],
   prepTime: '',
   cookTime: '',
@@ -53,6 +54,14 @@ export const RecipeForm: React.FC<P> = ({
                     {({ field }: { field: FieldInputProps<'name'> }) => (
                       <FormControl>
                         <FormLabel>Name</FormLabel>
+                        <Input {...field} />
+                      </FormControl>
+                    )}
+                  </Field>
+                  <Field name="source">
+                    {({ field }: { field: FieldInputProps<'source'> }) => (
+                      <FormControl>
+                        <FormLabel>Source</FormLabel>
                         <Input {...field} />
                       </FormControl>
                     )}

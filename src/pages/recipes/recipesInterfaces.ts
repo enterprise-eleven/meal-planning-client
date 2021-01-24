@@ -1,6 +1,7 @@
 export interface Recipe {
   id?: string
   name: string
+  source?: string
   prepTime?: string
   cookTime?: string
   ingredients: Ingredient[]
