@@ -17,6 +17,7 @@ import {
 } from '@chakra-ui/react'
 import { DeleteIcon, EditIcon } from '@chakra-ui/icons'
 import { ParagraphTextOrDefault } from '../../common/components/ParagraphTextOrDefault'
+import { useGetUser } from '../../common/hooks/useGetUser'
 
 const RECIPE = gql`
   query GetRecipe($id: Int!) {
@@ -33,6 +34,7 @@ const RECIPE = gql`
       name
       prepTime
       preparation
+      family
     }
   }
 `
@@ -52,6 +54,7 @@ export const RecipeView: React.FC = () => {
   const { id } = useParams()
   const { url } = useRouteMatch()
   const history = useHistory()
+  const { family } = useGetUser()
   const { loading, error, data } = useQuery<RecipeQuery>(RECIPE, {
     variables: { id },
   })
@@ -81,18 +84,25 @@ export const RecipeView: React.FC = () => {
     })
     history.push(basePath)
   }
+
+  const canEdit = recipe.family === family
+  const canDelete = recipe.family === family
   return (
     <VStack spacing={3} align="stretch">
       <ButtonGroup variant="outline" colorScheme="teal" spacing="4">
-        <Link to={`${url}/edit`}>
-          <IconButton aria-label="Edit recipe" icon={<EditIcon />} />
-        </Link>
+        {canEdit && (
+          <Link to={`${url}/edit`}>
+            <IconButton aria-label="Edit recipe" icon={<EditIcon />} />
+          </Link>
+        )}
 
-        <IconButton
-          aria-label="Delete recipe"
-          onClick={deleteRecipe}
-          icon={<DeleteIcon />}
-        />
+        {canDelete && (
+          <IconButton
+            aria-label="Delete recipe"
+            onClick={deleteRecipe}
+            icon={<DeleteIcon />}
+          />
+        )}
       </ButtonGroup>
       <ShowIfStringHasData string={recipe.id}>
         <HStack spacing={8} align="center">
