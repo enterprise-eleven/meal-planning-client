@@ -34,7 +34,7 @@ const RECIPE = gql`
       name
       prepTime
       preparation
-      family
+      familyId
     }
   }
 `
@@ -54,7 +54,7 @@ export const RecipeView: React.FC = () => {
   const { id } = useParams()
   const { url } = useRouteMatch()
   const history = useHistory()
-  const { family } = useGetUser()
+  const { familyId } = useGetUser()
   const { loading, error, data } = useQuery<RecipeQuery>(RECIPE, {
     variables: { id },
   })
@@ -85,8 +85,8 @@ export const RecipeView: React.FC = () => {
     history.push(basePath)
   }
 
-  const canEdit = recipe.family === family
-  const canDelete = recipe.family === family
+  const canEdit = recipe.familyId === familyId
+  const canDelete = recipe.familyId === familyId
   return (
     <VStack spacing={3} align="stretch">
       <ButtonGroup variant="outline" colorScheme="teal" spacing="4">

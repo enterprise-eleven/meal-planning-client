@@ -7,7 +7,7 @@ export interface Recipe {
   ingredients: Ingredient[]
   preparation?: string
   directions?: string
-  family?: number
+  familyId?: number
 }
 
 export interface RecipeQuery {
