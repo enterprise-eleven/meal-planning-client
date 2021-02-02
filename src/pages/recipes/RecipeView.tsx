@@ -40,11 +40,9 @@ const RECIPE = gql`
 `
 
 const DELETE_RECIPE = gql`
-  mutation DeleteRecipe($id: Int!) {
-    delete_recipes(where: { id: { _eq: $id } }) {
-      returning {
-        id
-      }
+  mutation UpdateRecipe($id: Int!, $recipe: recipes_set_input!) {
+    update_recipes_by_pk(pk_columns: { id: $id }, _set: $recipe) {
+      id
     }
   }
 `
@@ -79,7 +77,7 @@ export const RecipeView: React.FC = () => {
 
   const deleteRecipe = async () => {
     await deleteRecipeMutation({
-      variables: { id },
+      variables: { id, recipe: { disabled: true } },
       refetchQueries: ['AllRecipes'],
     })
     history.push(basePath)
