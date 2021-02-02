@@ -3,8 +3,8 @@ import { gql, useMutation } from '@apollo/client'
 import { Button, Input, Text, VStack } from '@chakra-ui/react'
 
 const ADD_FAMILY = gql`
-  mutation InsertFamily($family: family_insert_input!) {
-    insert_family_one(object: $family) {
+  mutation InsertFamily($family: families_insert_input!) {
+    insert_families_one(object: $family) {
       id
       name
     }
@@ -15,7 +15,7 @@ const UPDATE_USER_SET_FAMILY = gql`
   mutation UpdateUser($user: users_set_input!) {
     update_users(where: {}, _set: $user) {
       returning {
-        family
+        familyId
       }
     }
   }
@@ -28,7 +28,7 @@ export const CreateFamily: FC = () => {
   const submit = async () => {
     const {
       data: {
-        insert_family_one: { id: family },
+        insert_families_one: { id: familyId },
       },
     } = await insertFamily({
       variables: { family: { name } },
@@ -36,7 +36,7 @@ export const CreateFamily: FC = () => {
     })
 
     await updateUserSetFamily({
-      variables: { user: { family, isFamilyAdmin: true } },
+      variables: { user: { familyId, isFamilyAdmin: true } },
       refetchQueries: ['GetUser'],
     })
   }

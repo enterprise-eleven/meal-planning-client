@@ -10,17 +10,17 @@ import { Error } from '../../common/components/Error'
 import { FamilySelection } from './FamilySelection'
 
 export const Authenticated = () => {
-  const { family, isFamilyAdmin } = useGetUser()
+  const { familyId, isFamilyAdmin } = useGetUser()
 
-  if (family === -1) {
+  if (familyId === -1) {
     return <Loading />
   }
 
-  if (family === -2) {
+  if (familyId === -2) {
     return <Error />
   }
 
-  if (family === 0) {
+  if (familyId === 0) {
     return <FamilySelection />
   }
 
