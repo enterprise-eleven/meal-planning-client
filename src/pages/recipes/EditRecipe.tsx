@@ -1,9 +1,8 @@
 import React from 'react'
 import { gql, useMutation, useQuery } from '@apollo/client'
-import { omit, partition } from 'lodash/fp'
-import { propOr, map, differenceWith, eqProps } from 'ramda'
+import { map, omit } from 'ramda'
 import { useHistory, useParams, useRouteMatch } from 'react-router'
-import { Ingredient, Recipe, RecipeQuery } from './recipesInterfaces'
+import { Recipe, RecipeQuery } from './recipesInterfaces'
 import { RecipeForm } from './RecipeForm'
 
 const RECIPE = gql`
@@ -13,6 +12,7 @@ const RECIPE = gql`
       directions
       id
       ingredients {
+        order
         item
         measurement
         quantity
@@ -27,7 +27,17 @@ const RECIPE = gql`
 `
 
 const UPDATE_RECIPE = gql`
-  mutation UpdateRecipe($id: Int!, $recipe: recipes_set_input!) {
+  mutation UpdateRecipe(
+    $id: Int!
+    $recipe: recipes_set_input!
+    $ingredients: [ingredients_insert_input!]!
+  ) {
+    delete_ingredients(where: { recipeId: { _eq: $id } }) {
+      affected_rows
+    }
+    insert_ingredients(objects: $ingredients) {
+      affected_rows
+    }
     update_recipes_by_pk(pk_columns: { id: $id }, _set: $recipe) {
       cookTime
       directions
@@ -46,35 +56,6 @@ const UPDATE_RECIPE = gql`
   }
 `
 
-const UPDATE_INGREDIENT = gql`
-  mutation InsertIngredients($id: Int!, $ingredient: ingredients_set_input!) {
-    update_ingredients(where: { id: { _eq: $id } }, _set: $ingredient) {
-      returning {
-        item
-        measurement
-        quantity
-        id
-      }
-    }
-  }
-`
-
-const ADD_INGREDIENTS = gql`
-  mutation InsertIngredients($ingredients: [ingredients_insert_input!]!) {
-    insert_ingredients(objects: $ingredients) {
-      affected_rows
-    }
-  }
-`
-
-const DELETE_INGREDIENTS = gql`
-  mutation DeleteIngredients($ids: [Int!]!) {
-    delete_ingredients(where: { id: { _in: $ids } }) {
-      affected_rows
-    }
-  }
-`
-
 export const EditRecipe: React.FC = () => {
   // @ts-ignore
   const { id } = useParams()
@@ -84,9 +65,6 @@ export const EditRecipe: React.FC = () => {
     variables: { id },
   })
   const [updateRecipe] = useMutation(UPDATE_RECIPE)
-  const [updateIngredients] = useMutation(UPDATE_INGREDIENT)
-  const [addIngredients] = useMutation(ADD_INGREDIENTS)
-  const [deleteIngredients] = useMutation(DELETE_INGREDIENTS)
 
   if (loading || error) {
     // TODO Handle loading / error cases
@@ -94,54 +72,25 @@ export const EditRecipe: React.FC = () => {
   }
 
   const { recipes_by_pk: recipe } = data!
-  const currentIngredients = recipe.ingredients
 
   const submitRecipe = async (recipe: Recipe) => {
-    const { ingredients = [], ...rest } = recipe
-    const ingredientsToDelete = differenceWith(
-      (x, y) => eqProps('id', x, y),
-      currentIngredients,
-      ingredients,
-    )
-    const [ingredientsToUpdate, ingredientsToAdd] = partition(
-      (ingredient) => ingredient.id !== undefined,
-      ingredients,
-    )
+    const { ingredients = [], id, ...rest } = omit(['__typename'], recipe)
+    let index = 0
 
     await updateRecipe({
-      variables: { id, recipe: omit(['__typename', 'id'], rest) },
-    })
-
-    const idsToDelete = map<Ingredient, Number>(
-      propOr(0, 'id'),
-      ingredientsToDelete,
-    )
-    await deleteIngredients({ variables: { ids: idsToDelete } })
-
-    await Promise.all(
-      ingredientsToUpdate.map((ingredient) =>
-        updateIngredients({
-          variables: {
-            id: ingredient.id,
-            ingredient: omit(['__typename', 'id'], ingredient),
-          },
-        }),
-      ),
-    )
-
-    await addIngredients({
       variables: {
-        ingredients: ingredientsToAdd.map((ingredient) => ({
-          ...ingredient,
-          recipeId: id,
-        })),
+        id,
+        recipe: rest,
+        ingredients: map(
+          (x) => ({
+            ...x,
+            recipeId: id,
+            order: index++,
+          }),
+          ingredients,
+        ),
       },
-      refetchQueries: [
-        {
-          query: RECIPE,
-          variables: { id },
-        },
-      ],
+      refetchQueries: ['AllRecipes'],
     })
     history.push(url.substring(0, url.lastIndexOf('/edit')))
   }
