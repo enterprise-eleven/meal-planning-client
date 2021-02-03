@@ -1,39 +1,34 @@
 import React from 'react'
-import { v4 as uuidv4 } from 'uuid'
 import { gql, useMutation, useQuery } from '@apollo/client'
 import { useGetUser } from '../../common/hooks/useGetUser'
 import { Box, Button, Stack, Text, Heading } from '@chakra-ui/react'
 
 const CREATE_SECRET_KEY = gql`
-  mutation CreateSecretKey($secrets: [familySecretKeys_insert_input!]!) {
-    insert_familySecretKeys(objects: $secrets) {
-      returning {
-        secretKey
-      }
+  mutation CreateSecretKey($secret: familySecretKeys_insert_input!) {
+    insert_familySecretKeys_one(object: $secret) {
+      secretKey
     }
   }
 `
 
 const GET_ACTIVE_SECRET_KEYS = gql`
-  query ActiveKeysForFamily($family: Int!) {
-    familySecretKeys(where: { family: { _eq: $family } }) {
+  query ActiveKeysForFamily($familyId: Int!) {
+    familySecretKeys(where: { familyId: { _eq: $familyId } }) {
       secretKey
-      expirationDate
     }
   }
 `
 
 export const ManageSecretKeys: React.FC = () => {
-  const { family } = useGetUser()
+  const { familyId } = useGetUser()
   const [createSecretKey] = useMutation(CREATE_SECRET_KEY)
   const { loading, error, data } = useQuery(GET_ACTIVE_SECRET_KEYS, {
-    variables: { family },
+    variables: { familyId },
   })
 
   const createSecretKeyInDatabase = async () => {
-    const secretKey = uuidv4()
     await createSecretKey({
-      variables: { secrets: [{ secretKey, family }] },
+      variables: { secret: { familyId } },
       refetchQueries: ['ActiveKeysForFamily'],
     })
   }

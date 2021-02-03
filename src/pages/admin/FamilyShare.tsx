@@ -5,24 +5,24 @@ import { useGetUser } from '../../common/hooks/useGetUser'
 import { Button, Text, VStack, Input } from '@chakra-ui/react'
 
 const GET_FAMILY_BY_SECRET = gql`
-  query ActiveKeysForFamily($secretKey: String!) {
+  query FamilyIdBySecret($secretKey: uuid!) {
     familySecretKeys(where: { secretKey: { _eq: $secretKey } }) {
-      family
+      familyId
     }
   }
 `
 
 const INSERT_FAMILY_SHARE = gql`
-  mutation InsertFamilyShare($familyShare: familyShare_insert_input!) {
-    insert_familyShare_one(object: $familyShare) {
-      hostFamily
-      guestFamily
+  mutation InsertFamilyShare($familyShare: familyShares_insert_input!) {
+    insert_familyShares_one(object: $familyShare) {
+      hostId
+      guestId
     }
   }
 `
 
 export const FamilyShare: React.FC = () => {
-  const { family: hostFamily } = useGetUser()
+  const { familyId: hostId } = useGetUser()
   const [key, setKey] = useState<string>('')
   const [valid, setValid] = useState<boolean>(true)
   const { data } = useQuery(GET_FAMILY_BY_SECRET, {
@@ -34,9 +34,9 @@ export const FamilyShare: React.FC = () => {
       setValid(false)
     }
     if (data.familySecretKeys.length === 1) {
-      const { family: guestFamily } = data.familySecretKeys[0]
+      const { familyId: guestId } = data.familySecretKeys[0]
       await insertFamilyShare({
-        variables: { familyShare: { hostFamily, guestFamily } },
+        variables: { familyShare: { hostId, guestId } },
         refetchQueries: ['GetUser'],
       })
     }
