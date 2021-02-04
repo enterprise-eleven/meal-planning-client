@@ -3,10 +3,11 @@ import { gql, useMutation, useQuery } from '@apollo/client'
 import { isNil } from 'ramda'
 import { useGetUser } from '../../common/hooks/useGetUser'
 import { Box, Button, Stack, Text, Heading, Input } from '@chakra-ui/react'
+import { UsersAndMembers, Member, User } from './adminTypes'
 
 const ADD_OTHER_FAMILY_MEMBER = gql`
-  mutation CreateNonUserMember($member: otherFamilyMembers_insert_input!) {
-    insert_otherFamilyMembers_one(object: $member) {
+  mutation CreateNonUserMember($member: members_insert_input!) {
+    insert_members_one(object: $member) {
       name
     }
   }
@@ -18,33 +19,18 @@ const GET_CURRENT_MEMBERS = gql`
       id
       name
     }
-    otherFamilyMembers(where: { familyId: { _eq: $familyId } }) {
+    members(where: { familyId: { _eq: $familyId } }) {
       id
       name
     }
   }
 `
 
-type User = {
-  id: string
-  name: string
-}
-
-type OtherMember = {
-  id: number
-  name: string
-}
-
-type CurrentMembers = {
-  users: Array<User>
-  otherFamilyMembers: Array<OtherMember>
-}
-
 export const ManageFamily: React.FC = () => {
   const [name, setName] = useState<string>('')
   const { familyId } = useGetUser()
   const [addOtherMember] = useMutation(ADD_OTHER_FAMILY_MEMBER)
-  const { loading, error, data } = useQuery<CurrentMembers>(
+  const { loading, error, data } = useQuery<UsersAndMembers>(
     GET_CURRENT_MEMBERS,
     {
       variables: { familyId },
@@ -52,10 +38,10 @@ export const ManageFamily: React.FC = () => {
   )
 
   let currentUsers: Array<User> = []
-  let currentOtherMembers: Array<OtherMember> = []
+  let currentMembers: Array<Member> = []
   if (!loading && !error && !isNil(data)) {
     currentUsers = data.users
-    currentOtherMembers = data.otherFamilyMembers
+    currentMembers = data.members
   }
 
   const addOtherMemberInDatabase = async () => {
@@ -79,7 +65,7 @@ export const ManageFamily: React.FC = () => {
       <Box minW="225px" w="25%">
         <Stack direction="column" spacing={4}>
           <Heading>Non-User Members</Heading>
-          {currentOtherMembers.map((member) => (
+          {currentMembers.map((member) => (
             <Text key={member.id}>{member.name}</Text>
           ))}
           <Input

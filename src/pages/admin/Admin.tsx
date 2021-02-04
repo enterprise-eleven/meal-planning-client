@@ -5,10 +5,12 @@ import { useRouteMatch } from 'react-router'
 import { ManageSecretKeys } from './ManageSecretKeys'
 import { FamilyShare } from './FamilyShare'
 import { ManageFamily } from './ManageFamily'
+import { ManageDefaultMeals } from './ManageDefaultMeals'
 
 const KEYS_PATH = 'manage-secret-keys'
 const FAMILY_PATH = 'manage-family'
 const SHARE_PATH = 'family-share'
+const MEALS_PATH = 'manage-default-meals'
 
 export const Admin: React.FC = () => {
   const { path } = useRouteMatch()
@@ -26,6 +28,9 @@ export const Admin: React.FC = () => {
           <Link to={`${path}/${SHARE_PATH}`}>
             <Button style={{ width: '100%' }}>Share with families</Button>
           </Link>
+          <Link to={`${path}/${MEALS_PATH}`}>
+            <Button style={{ width: '100%' }}>Manage Default Meals</Button>
+          </Link>
         </VStack>
       </Box>
       <Box w="100%" p={2}>
@@ -38,6 +43,9 @@ export const Admin: React.FC = () => {
           </Route>
           <Route path={`${path}/${SHARE_PATH}`}>
             <FamilyShare />
+          </Route>
+          <Route path={`${path}/${MEALS_PATH}`}>
+            <ManageDefaultMeals />
           </Route>
         </Switch>
       </Box>
