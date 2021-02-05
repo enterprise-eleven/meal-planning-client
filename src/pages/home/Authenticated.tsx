@@ -8,6 +8,7 @@ import { useGetUser } from '../../common/hooks/useGetUser'
 import { Loading } from '../../common/components/Loading'
 import { Error } from '../../common/components/Error'
 import { FamilySelection } from './FamilySelection'
+import { Schedule } from '../schedule/Schedule'
 
 export const Authenticated = () => {
   const { familyId, isFamilyAdmin } = useGetUser()
@@ -44,14 +45,17 @@ export const Authenticated = () => {
       </Box>
       <Box w="100%" p={2}>
         <Switch>
-          <Route path="/recipes" render={() => <Recipes />} />
-          <Route
-            path="/schedule"
-            render={(props) => {
-              return <div>Schedule</div>
-            }}
-          />
-          {isFamilyAdmin && <Route path="/admin" render={() => <Admin />} />}
+          <Route path="/recipes">
+            <Recipes />
+          </Route>
+          <Route path="/schedule">
+            <Schedule />
+          </Route>
+          {isFamilyAdmin && (
+            <Route path="/admin">
+              <Admin />
+            </Route>
+          )}
         </Switch>
       </Box>
     </BrowserRouter>
