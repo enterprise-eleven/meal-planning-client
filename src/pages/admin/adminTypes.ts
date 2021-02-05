@@ -3,23 +3,16 @@ export type User = {
   name: string
 }
 
-export type Member = {
-  id: number
-  name: string
-}
-
 export type DefaultMeal = {
   id: number
   name: string
-  membersToDefaultMeals: Array<{ member: Member }>
   usersToDefaultMeals: Array<{ user: User }>
 }
 
-export type UsersAndMembers = {
+export type GetUsers = {
   users: Array<User>
-  members: Array<Member>
 }
 
-export type MealsWithUsers = UsersAndMembers & {
+export type MealsWithUsers = GetUsers & {
   defaultMeals: Array<DefaultMeal>
 }

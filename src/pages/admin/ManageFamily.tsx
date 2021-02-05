@@ -1,25 +1,22 @@
 import React, { useState } from 'react'
 import { gql, useMutation, useQuery } from '@apollo/client'
-import { isNil } from 'ramda'
+import { isNil, partition, startsWith } from 'ramda'
+import { v4 as uuidv4 } from 'uuid'
 import { useGetUser } from '../../common/hooks/useGetUser'
 import { Box, Button, Stack, Text, Heading, Input } from '@chakra-ui/react'
-import { UsersAndMembers, Member, User } from './adminTypes'
+import { GetUsers, User } from './adminTypes'
 
 const ADD_OTHER_FAMILY_MEMBER = gql`
-  mutation CreateNonUserMember($member: members_insert_input!) {
-    insert_members_one(object: $member) {
+  mutation CreateUser($user: users_insert_input!) {
+    insert_users_one(object: $user) {
       name
     }
   }
 `
 
 const GET_CURRENT_MEMBERS = gql`
-  query GetCurrentMembers($familyId: Int!) {
+  query GetCurrentUsers($familyId: Int!) {
     users(where: { familyId: { _eq: $familyId } }) {
-      id
-      name
-    }
-    members(where: { familyId: { _eq: $familyId } }) {
       id
       name
     }
@@ -30,24 +27,32 @@ export const ManageFamily: React.FC = () => {
   const [name, setName] = useState<string>('')
   const { familyId } = useGetUser()
   const [addOtherMember] = useMutation(ADD_OTHER_FAMILY_MEMBER)
-  const { loading, error, data } = useQuery<UsersAndMembers>(
-    GET_CURRENT_MEMBERS,
-    {
-      variables: { familyId },
-    },
-  )
+  const { loading, error, data } = useQuery<GetUsers>(GET_CURRENT_MEMBERS, {
+    variables: { familyId },
+  })
 
   let currentUsers: Array<User> = []
-  let currentMembers: Array<Member> = []
+  let currentMembers: Array<User> = []
   if (!loading && !error && !isNil(data)) {
-    currentUsers = data.users
-    currentMembers = data.members
+    const [members, users] = partition(
+      (user) => startsWith('member', user.id),
+      data.users,
+    )
+    currentUsers = users
+    currentMembers = members
   }
 
   const addOtherMemberInDatabase = async () => {
     await addOtherMember({
-      variables: { member: { familyId, name } },
-      refetchQueries: ['GetCurrentMembers'],
+      variables: {
+        user: {
+          familyId,
+          name,
+          isFamilyAdmin: false,
+          id: `member|${uuidv4()}`,
+        },
+      },
+      refetchQueries: ['GetCurrentUsers'],
     })
     setName('')
   }
