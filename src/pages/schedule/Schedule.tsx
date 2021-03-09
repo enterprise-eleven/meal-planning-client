@@ -3,8 +3,10 @@ import { Box, Button, Stack, VStack } from '@chakra-ui/react'
 import { Link, Route, Switch } from 'react-router-dom'
 import { useRouteMatch } from 'react-router'
 import { TodayList } from './TodayList'
+import { ManageMeals } from './ManageMeals'
 
 const TODAY_PATH = 'todays-meals'
+const MANAGE_MEALS = 'manage-meals'
 
 export const Schedule: React.FC = () => {
   const { path } = useRouteMatch()
@@ -16,15 +18,9 @@ export const Schedule: React.FC = () => {
           <Link to={`${path}/${TODAY_PATH}`}>
             <Button style={{ width: '100%' }}>Today's Meals</Button>
           </Link>
-          {/*<Link to={`${path}/${FAMILY_PATH}`}>*/}
-          {/*  <Button style={{ width: '100%' }}>Manage Family</Button>*/}
-          {/*</Link>*/}
-          {/*<Link to={`${path}/${SHARE_PATH}`}>*/}
-          {/*  <Button style={{ width: '100%' }}>Share with families</Button>*/}
-          {/*</Link>*/}
-          {/*<Link to={`${path}/${MEALS_PATH}`}>*/}
-          {/*  <Button style={{ width: '100%' }}>Manage Default Meals</Button>*/}
-          {/*</Link>*/}
+          <Link to={`${path}/${MANAGE_MEALS}`}>
+            <Button style={{ width: '100%' }}>Manage Meals</Button>
+          </Link>
         </VStack>
       </Box>
       <Box w="100%" p={2}>
@@ -32,15 +28,9 @@ export const Schedule: React.FC = () => {
           <Route path={`${path}/${TODAY_PATH}`}>
             <TodayList />
           </Route>
-          {/*<Route path={`${path}/${FAMILY_PATH}`}>*/}
-          {/*  <ManageFamily />*/}
-          {/*</Route>*/}
-          {/*<Route path={`${path}/${SHARE_PATH}`}>*/}
-          {/*  <FamilyShare />*/}
-          {/*</Route>*/}
-          {/*<Route path={`${path}/${MEALS_PATH}`}>*/}
-          {/*  <ManageDefaultMeals />*/}
-          {/*</Route>*/}
+          <Route path={`${path}/${MANAGE_MEALS}`}>
+            <ManageMeals />
+          </Route>
         </Switch>
       </Box>
     </Stack>

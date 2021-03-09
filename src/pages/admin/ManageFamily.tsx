@@ -14,7 +14,7 @@ const ADD_OTHER_FAMILY_MEMBER = gql`
   }
 `
 
-const GET_CURRENT_MEMBERS = gql`
+export const GET_CURRENT_MEMBERS = gql`
   query GetCurrentUsers($familyId: Int!) {
     users(where: { familyId: { _eq: $familyId } }) {
       id

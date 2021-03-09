@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react'
 import { isNil } from 'ramda'
 
-const GET_CURRENT_DEFAULT_MEALS = gql`
+export const GET_CURRENT_DEFAULT_MEALS = gql`
   query GetDefaultMeals($familyId: Int!) {
     users(where: { familyId: { _eq: $familyId } }) {
       id

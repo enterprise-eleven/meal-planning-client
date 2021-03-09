@@ -1,13 +1,13 @@
 import React, { Fragment } from 'react'
-import { Link } from 'react-router-dom'
+import { Link as ReactRouterLink } from 'react-router-dom'
 import { format } from 'date-fns'
 import { gql, useQuery } from '@apollo/client'
 import { isNil } from 'ramda'
-import { SimpleGrid, Heading, VStack, Text, Button } from '@chakra-ui/react'
+import { SimpleGrid, Heading, VStack, Text, Link } from '@chakra-ui/react'
 import { Loading } from '../../common/components/Loading'
 import { Error } from '../../common/components/Error'
 
-type TodaysMeals = {
+export type MealsByDate = {
   meals: Array<{
     id: number
     name: string
@@ -26,8 +26,8 @@ type TodaysMeals = {
   }>
 }
 
-const TODAYS_MEALS = gql`
-  query TodaysMeals($date: date) {
+export const MEALS_BY_DATE = gql`
+  query MealsByDate($date: date) {
     meals(where: { date: { _eq: $date } }) {
       id
       name
@@ -48,7 +48,7 @@ const TODAYS_MEALS = gql`
 `
 
 export const TodayList: React.FC = () => {
-  const { loading, error, data } = useQuery<TodaysMeals>(TODAYS_MEALS, {
+  const { loading, error, data } = useQuery<MealsByDate>(MEALS_BY_DATE, {
     variables: { date: format(new Date(), 'yyyy-MM-dd') },
   })
 
@@ -60,7 +60,6 @@ export const TodayList: React.FC = () => {
     return <Error />
   }
 
-  console.log(data)
   return (
     <VStack spacing={4} justify="flex-start" w="70%" alignItems="flex-start">
       <Heading>Today's Meals</Heading>
@@ -80,7 +79,9 @@ export const TodayList: React.FC = () => {
               {meal.recipesToMeals.map(({ recipe }) => (
                 <Text key={recipe.id}>
                   {recipe.name}{' '}
-                  <Link to={`/recipes/${recipe.id}`}>See Recipe</Link>
+                  <Link as={ReactRouterLink} to={`/recipes/${recipe.id}`}>
+                    See Recipe
+                  </Link>
                 </Text>
               ))}
             </VStack>
