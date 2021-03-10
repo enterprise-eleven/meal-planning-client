@@ -1,8 +1,9 @@
 import { gql, useQuery } from '@apollo/client'
+import { useAuth0 } from '@auth0/auth0-react'
 
 const GET_USER = gql`
-  query GetUser {
-    users {
+  query GetUser($id: String!) {
+    users_by_pk(id: $id) {
       familyId
       isFamilyAdmin
     }
@@ -10,7 +11,13 @@ const GET_USER = gql`
 `
 
 export const useGetUser = () => {
-  const { loading, error, data } = useQuery(GET_USER)
+  const {
+    user: { sub },
+  } = useAuth0()
+  const { loading, error, data } = useQuery(GET_USER, {
+    variables: { id: sub },
+  })
+  console.log(data)
 
   if (loading) {
     // TODO Handle loading / error cases
@@ -23,5 +30,7 @@ export const useGetUser = () => {
     return { familyId: -2, isFamilyAdmin: false }
   }
 
-  return data.users[0]
+  const { users_by_pk: user } = data!
+
+  return user
 }
