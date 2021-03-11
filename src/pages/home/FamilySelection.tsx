@@ -4,11 +4,12 @@ import { BrowserRouter, Link, Route, Switch } from 'react-router-dom'
 import { LogoutButton } from '../../auth/AuthButtons'
 import { JoinFamily } from '../family/JoinFamily'
 import { CreateFamily } from '../family/CreateFamily'
+import { Header } from '../../common/components/Header'
 
 export const FamilySelection: FC = () => {
   return (
     <BrowserRouter>
-      <Box bg="gray.500" w="100%" p={4} d="flex" justifyContent="flex-end">
+      <Header>
         <Stack direction="row" spacing={4}>
           <Link to="/join-family">
             <Button>Join Family</Button>
@@ -18,7 +19,7 @@ export const FamilySelection: FC = () => {
           </Link>
           <LogoutButton />
         </Stack>
-      </Box>
+      </Header>
       <Box w="100%" p={2}>
         <Switch>
           <Route path="/join-family" render={() => <JoinFamily />} />

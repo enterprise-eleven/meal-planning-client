@@ -8,6 +8,7 @@ import { useGetUser } from '../../common/hooks/useGetUser'
 import { Loading } from '../../common/components/Loading'
 import { Error } from '../../common/components/Error'
 import { FamilySelection } from './FamilySelection'
+import { Header } from '../../common/components/Header'
 
 export const Authenticated = () => {
   const { familyId, isFamilyAdmin } = useGetUser()
@@ -26,7 +27,7 @@ export const Authenticated = () => {
 
   return (
     <BrowserRouter>
-      <Box bg="gray.500" w="100%" p={4} d="flex" justifyContent="flex-end">
+      <Header>
         <Stack direction="row" spacing={4}>
           <Link to="/recipes">
             <Button>Recipes</Button>
@@ -41,7 +42,7 @@ export const Authenticated = () => {
           )}
           <LogoutButton />
         </Stack>
-      </Box>
+      </Header>
       <Box w="100%" p={2}>
         <Switch>
           <Route path="/recipes" render={() => <Recipes />} />
